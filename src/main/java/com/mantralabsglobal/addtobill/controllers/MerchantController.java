@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mantralabsglobal.addtobill.model.Merchant;
 
 @RestController(value="/merchant")
-public class MerchantController {
+public class MerchantController extends BaseController{
 	
 	@RequestMapping(method=RequestMethod.GET)
 	public Merchant getMerchant(@RequestParam(value="id", required=true) String merchantId){

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mantralabsglobal.addtobill.model.User;
 
 @RestController(value="user")
-public class UserController {
+public class UserController extends BaseController {
 
 	@RequestMapping(method=RequestMethod.GET)
 	public User getUser(@RequestParam(value="id", required=true) String userId){
