@@ -1,6 +1,9 @@
 package com.mantralabsglobal.addtobill.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mantralabsglobal.addtobill.model.Account;
 import com.mantralabsglobal.addtobill.model.BillingPeriod;
@@ -54,8 +57,9 @@ public class AccountService  extends BaseService{
 	protected boolean canApplyTransaction(Transaction t, Account account, BillingPeriod period) {
 		return period.getRunningBalance() + t.getSignedAmount() <= account.getCreditLimit();
 	}
-
-	public boolean applyTransaction(Transaction t) {
+	
+	@Transactional(propagation=Propagation.SUPPORTS, isolation=Isolation.READ_COMMITTED, readOnly=false)
+	public void applyTransaction(Transaction t) {
 		Account account = accountRepository.findOne(t.getAccountId());
 		BillingPeriod period = getCurrentBillingPeriod(t.getAccountId());
 		if( !period.isOpen())
@@ -64,7 +68,6 @@ public class AccountService  extends BaseService{
 		if(canApplyTransaction(t, account, period)){
 			period.setRunningBalance(period.getRunningBalance() + t.getSignedAmount());
 			periodRepository.save(period);
-			return true;
 		}
 		else
 		{
@@ -72,9 +75,4 @@ public class AccountService  extends BaseService{
 		}
 	}
 
-	public void rollbackTransaction(Transaction t) {
-		BillingPeriod period = getCurrentBillingPeriod(t.getAccountId());
-		period.setRunningBalance(period.getRunningBalance() - t.getSignedAmount());
-		periodRepository.save(period);
-	}
 }
