@@ -8,6 +8,9 @@ import com.mantralabsglobal.addtobill.model.Transaction;
 import com.mantralabsglobal.addtobill.model.User;
 import com.mantralabsglobal.addtobill.repository.AccountRepository;
 import com.mantralabsglobal.addtobill.repository.BillingPeriodRepository;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AccountService  extends BaseService{
@@ -49,7 +52,7 @@ public class AccountService  extends BaseService{
 	}
 	
 	
-
+	@Transactional(propagation=Propagation.SUPPORTS, isolation=Isolation.READ_COMMITTED, readOnly=false)
 	public boolean applyTransaction(Transaction t) {
 		Account account = accountRepository.findOne(t.getAccountId());
 		BillingPeriod period = billingPeriodService.getCurrentBillingPeriod(t.getAccountId());
