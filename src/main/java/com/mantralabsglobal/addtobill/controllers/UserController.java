@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.mantralabsglobal.addtobill.model.User;
 
-@RestController(value="user")
+@RestController(value="/user")
 public class UserController extends BaseController {
 
 	@RequestMapping(method=RequestMethod.GET)
