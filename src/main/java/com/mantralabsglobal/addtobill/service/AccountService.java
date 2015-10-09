@@ -1,9 +1,6 @@
 package com.mantralabsglobal.addtobill.service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.mantralabsglobal.addtobill.model.Account;
 import com.mantralabsglobal.addtobill.model.BillingPeriod;
@@ -17,6 +14,7 @@ public class AccountService  extends BaseService{
 
 	private AccountRepository accountRepository;
 	private BillingPeriodRepository periodRepository;
+	private BillingPeriodService billingPeriodService;
 
 	public AccountRepository getAccountRepository() {
 		return accountRepository;
@@ -50,24 +48,18 @@ public class AccountService  extends BaseService{
 		return accountRepository.save(account);
 	}
 	
-	public BillingPeriod getCurrentBillingPeriod(String accountId){
-		return periodRepository.findByAccountIdAndStatus(accountId, BillingPeriod.BILLING_PERIOD_STATUS_OPEN);
-	}
-
-	protected boolean canApplyTransaction(Transaction t, Account account, BillingPeriod period) {
-		return period.getRunningBalance() + t.getSignedAmount() <= account.getCreditLimit();
-	}
 	
-	@Transactional(propagation=Propagation.SUPPORTS, isolation=Isolation.READ_COMMITTED, readOnly=false)
-	public void applyTransaction(Transaction t) {
+
+	public boolean applyTransaction(Transaction t) {
 		Account account = accountRepository.findOne(t.getAccountId());
-		BillingPeriod period = getCurrentBillingPeriod(t.getAccountId());
+		BillingPeriod period = billingPeriodService.getCurrentBillingPeriod(t.getAccountId());
 		if( !period.isOpen())
 			throw new RuntimeException("Billing period is not open");
 		
-		if(canApplyTransaction(t, account, period)){
+		if(billingPeriodService.canApplyTransaction(t, account, period)){
 			period.setRunningBalance(period.getRunningBalance() + t.getSignedAmount());
 			periodRepository.save(period);
+			return true;
 		}
 		else
 		{
@@ -75,4 +67,5 @@ public class AccountService  extends BaseService{
 		}
 	}
 
+	
 }
