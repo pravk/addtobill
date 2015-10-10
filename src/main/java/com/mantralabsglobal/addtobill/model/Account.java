@@ -153,6 +153,6 @@ public class Account{
 	
 
 	protected boolean hasSufficientBalance(Transaction t) {
-		return getRemainingCreditBalance() + t.getSignedAmount() <= getCreditLimit();
+		return getRemainingCreditBalance() + t.getSignedAmount()>=0;
 	}
 }

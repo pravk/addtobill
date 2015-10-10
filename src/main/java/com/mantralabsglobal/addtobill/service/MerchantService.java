@@ -2,7 +2,9 @@ package com.mantralabsglobal.addtobill.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
+import com.mantralabsglobal.addtobill.exception.MerchantExistsException;
 import com.mantralabsglobal.addtobill.model.Merchant;
 import com.mantralabsglobal.addtobill.repository.MerchantRepository;
 
@@ -24,9 +26,18 @@ public class MerchantService {
 		return merchantRepository.findOne(id);
 	}
 
-	public Merchant createMerchant(Merchant merchant) {
-		//TODO: Validate merchant object
-		return merchantRepository.save(merchant);
+	public Merchant createMerchant(Merchant merchant) throws MerchantExistsException {
+		Assert.notNull(merchant);
+		Assert.hasText(merchant.getMerchantName(), "Invalid merchant name");
+		Merchant m = merchantRepository.findByMerchantName(merchant.getMerchantName());
+		if(m == null)
+		{
+			return merchantRepository.save(merchant);
+		}
+		else
+		{
+			throw new MerchantExistsException();
+		}
 	}
 	
 }

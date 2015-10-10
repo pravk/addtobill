@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mantralabsglobal.addtobill.exception.MerchantExistsException;
 import com.mantralabsglobal.addtobill.exception.ResourceNotFoundException;
 import com.mantralabsglobal.addtobill.model.Merchant;
 import com.mantralabsglobal.addtobill.service.MerchantService;
@@ -26,7 +27,7 @@ public class MerchantController extends BaseController{
 	}
 	
 	@RequestMapping(value="/merchant",method=RequestMethod.POST)
-	public Merchant createMerchant(@RequestBody Merchant merchant) throws ResourceNotFoundException{
+	public Merchant createMerchant(@RequestBody Merchant merchant) throws MerchantExistsException{
 		return merchantService.createMerchant(merchant);
 	}
 }

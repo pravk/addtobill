@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mantralabsglobal.addtobill.exception.AccountNotFoundException;
 import com.mantralabsglobal.addtobill.exception.InsufficientBalanceException;
+import com.mantralabsglobal.addtobill.exception.InvalidRequestException;
 import com.mantralabsglobal.addtobill.model.Transaction;
 import com.mantralabsglobal.addtobill.model.TransactionFailureResult;
 import com.mantralabsglobal.addtobill.model.TransactionResult;
@@ -30,19 +30,22 @@ public class AccountController extends BaseController{
 		this.accountService = accountService;
 	}
 	
+	@RequestMapping(value="/account/transaction", method=RequestMethod.GET)
+	public Transaction getTransaction(@RequestParam(value="id", required=true) String transactionId){
+		return accountService.getTransaction(transactionId);
+	}
+	
 	@RequestMapping(value="/account/transaction", method=RequestMethod.POST)
-	public TransactionResult createTransacton(@RequestBody Transaction transaction){
+	public TransactionResult createTransacton(@RequestBody Transaction transaction) throws InvalidRequestException{
 		try{
 			Transaction t = accountService.createTransaction(transaction);
 			if(t != null)
-				return new TransactionSuccessResult(t.getTransactionId(), t.getVendorReferenceId());
+				return new TransactionSuccessResult(t.getTransactionId(), t.getMerchantReferenceId());
 			else
 				return new TransactionFailureResult("Unknow error");
 		}
 		catch(InsufficientBalanceException e)
 		{
-			return new TransactionFailureResult(e);
-		} catch (AccountNotFoundException e) {
 			return new TransactionFailureResult(e);
 		}
 		
@@ -50,8 +53,12 @@ public class AccountController extends BaseController{
 	
 	@RequestMapping(value="/account/transaction", method=RequestMethod.DELETE)
 	public TransactionResult cancelTransacton(@RequestParam(value="id", required=true) String transactionId){
-		//return accountService.cancelTransaction(transactionId);
-		return null;
+			Transaction transaction = accountService.cancelTransaction(transactionId);
+			if(transaction != null)
+				return new TransactionSuccessResult(transaction.getTransactionId(), transaction.getMerchantReferenceId());
+			else
+				return new TransactionFailureResult("Unknow error");
+	
 	}
 	
 	@RequestMapping(value="/account/transaction", method=RequestMethod.PUT)
