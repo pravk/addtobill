@@ -8,7 +8,7 @@ import org.springframework.util.Assert;
 
 import com.mantralabsglobal.addtobill.exception.MerchantExistsException;
 import com.mantralabsglobal.addtobill.exception.UserExistsException;
-import com.mantralabsglobal.addtobill.model.Account;
+import com.mantralabsglobal.addtobill.model.UserAccount;
 import com.mantralabsglobal.addtobill.model.Merchant;
 import com.mantralabsglobal.addtobill.model.User;
 
@@ -31,7 +31,7 @@ public class AdminService extends BaseService{
 	}
 
 
-	public List<Account> getUserAccounts(String userId) {
+	public List<UserAccount> getUserAccounts(String userId) {
 		return accountRepository.findAllByUserId(userId);
 	}
 	
@@ -50,15 +50,15 @@ public class AdminService extends BaseService{
 	
 	}
 	
-	public Account lockAccount(String accountId, String reason){
-		Account account = accountRepository.findOne(accountId);
-		account.setStatus(Account.ACCOUNT_STATUS_LOCKED);
+	public UserAccount lockAccount(String accountId, String reason){
+		UserAccount account = accountRepository.findOne(accountId);
+		account.setStatus(UserAccount.ACCOUNT_STATUS_LOCKED);
 		return accountRepository.save(account);
 	}
 	
-	public Account closeAccount(String accountId, String reason){
-		Account account = accountRepository.findOne(accountId);
-		account.setStatus(Account.ACCOUNT_STATUS_CLOSED);
+	public UserAccount closeAccount(String accountId, String reason){
+		UserAccount account = accountRepository.findOne(accountId);
+		account.setStatus(UserAccount.ACCOUNT_STATUS_CLOSED);
 		return accountRepository.save(account);
 	}
 	

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.mantralabsglobal.addtobill.exception.InsufficientBalanceException;
 import com.mantralabsglobal.addtobill.exception.InvalidRequestException;
-import com.mantralabsglobal.addtobill.model.Account;
+import com.mantralabsglobal.addtobill.model.UserAccount;
 import com.mantralabsglobal.addtobill.model.MerchantAccount;
 import com.mantralabsglobal.addtobill.model.Transaction;
 import com.mantralabsglobal.addtobill.model.TransactionResult;
@@ -26,7 +26,7 @@ public class TransactionService extends BaseService{
 		
 		validator.validateNewTransaction(transaction);
 		
-		Account userAccount = accountRepository.findOne(transaction.getUserAccountId());
+		UserAccount userAccount = accountRepository.findOne(transaction.getUserAccountId());
 		MerchantAccount merchantAccount = merchantAccountRepository.findOneByMerchantId(transaction.getMerchantId());
 		
 							
@@ -61,7 +61,7 @@ public class TransactionService extends BaseService{
 		return null;
 	}
 
-	private Transaction createUserTransaction(Transaction transaction, Account userAccount) {
+	private Transaction createUserTransaction(Transaction transaction, UserAccount userAccount) {
 		// TODO Auto-generated method stub
 		//t.setTransactionId(ObjectId.get().toString());
 		return null;

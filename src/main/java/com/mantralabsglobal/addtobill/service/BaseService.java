@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.gson.Gson;
-import com.mantralabsglobal.addtobill.model.Account;
+import com.mantralabsglobal.addtobill.model.UserAccount;
 import com.mantralabsglobal.addtobill.model.Transaction;
 import com.mantralabsglobal.addtobill.repository.AccountRepository;
 import com.mantralabsglobal.addtobill.repository.MerchantAccountRepository;
@@ -30,7 +30,7 @@ public abstract class BaseService {
 	}
 
 	
-	public Account getAccountDetails(String accountId){
+	public UserAccount getAccountDetails(String accountId){
 		return accountRepository.findOne(accountId);
 	}
 
@@ -49,8 +49,8 @@ public abstract class BaseService {
 	}
 	
 	protected Transaction getUserTransaction(String userId, String transactionId) {
-		List<Account> userAccountList = accountRepository.findAllByUserId(userId);
-		for(Account userAccount: userAccountList){
+		List<UserAccount> userAccountList = accountRepository.findAllByUserId(userId);
+		for(UserAccount userAccount: userAccountList){
 			Transaction transaction = accountRepository.findOneByAccountIdAndTransactionId(userAccount.getAccountId(), transactionId);
 			if(transaction != null)
 				return transaction;

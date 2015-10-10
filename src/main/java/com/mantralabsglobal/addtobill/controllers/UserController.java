@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mantralabsglobal.addtobill.exception.InvalidRequestException;
 import com.mantralabsglobal.addtobill.exception.ResourceNotFoundException;
-import com.mantralabsglobal.addtobill.model.Account;
+import com.mantralabsglobal.addtobill.model.UserAccount;
 import com.mantralabsglobal.addtobill.model.Transaction;
 import com.mantralabsglobal.addtobill.model.User;
 import com.mantralabsglobal.addtobill.service.AccountService;
@@ -33,14 +33,14 @@ public class UserController extends BaseController {
 	}
 	
 	@RequestMapping(value="/user/accounts", method=RequestMethod.GET)
-	public List<Account> getUserAccounts(Principal principal) throws ResourceNotFoundException{
+	public List<UserAccount> getUserAccounts(Principal principal) throws ResourceNotFoundException{
 		
 		return userService.getUserAccounts(principal);
 	}
 
 	@RequestMapping(value="/user/account", method=RequestMethod.GET)
-	public Account getAccount(@RequestParam(value="id") String accountId) throws ResourceNotFoundException{
-		Account acct = accountService.getAccountDetails(accountId);
+	public UserAccount getAccount(@RequestParam(value="id") String accountId) throws ResourceNotFoundException{
+		UserAccount acct = accountService.getAccountDetails(accountId);
 		if(acct != null)
 			return acct;
 		throw new ResourceNotFoundException(); 

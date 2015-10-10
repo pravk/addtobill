@@ -8,7 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 
-public class Account{
+public class UserAccount{
 
 	public static final String ACCOUNT_STATUS_LOCKED = "Locked";
 	public static final String ACCOUNT_STATUS_ACTIVE = "Active";

@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.mantralabsglobal.addtobill.model.Account;
+import com.mantralabsglobal.addtobill.model.UserAccount;
 import com.mantralabsglobal.addtobill.model.Transaction;
 import com.mantralabsglobal.addtobill.model.User;
 
@@ -26,7 +26,7 @@ public class UserService  extends BaseService {
 		return userRepository.findOneByEmail(principal.getName());
 	}
 
-	public List<Account> getUserAccounts(Principal principal) {
+	public List<UserAccount> getUserAccounts(Principal principal) {
 	 	String userId = getUserIdByEmail(principal.getName());
 		return accountRepository.findAllByUserId(userId);
 	}
