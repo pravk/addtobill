@@ -75,6 +75,10 @@ public class AdminController {
 		return adminService.createMerchant(merchant);
 	}
 
+	@RequestMapping(value="/admin/merchant",method=RequestMethod.GET)
+	public Merchant createMerchant(@RequestParam(value="id", required=true) String merchantId) throws MerchantExistsException{
+		return adminService.getMerchant(merchantId);
+	}
 	public AdminService getAdminService() {
 		return adminService;
 	}

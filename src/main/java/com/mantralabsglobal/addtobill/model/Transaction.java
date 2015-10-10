@@ -19,6 +19,7 @@ public class Transaction {
 
 	private String currency;
 	private double amount;
+	private String transactionAccountId;
 	private String userAccountId;
 	private String merchantReferenceId;
 	private String debitCreditIndicator;
@@ -85,6 +86,14 @@ public class Transaction {
 
 	public double getSignedAmount() {
 		return (isDebitTransaction()?-1:1)*getAmount();
+	}
+
+	public String getTransactionAccountId() {
+		return transactionAccountId;
+	}
+
+	public void setTransactionAccountId(String transactionAccountId) {
+		this.transactionAccountId = transactionAccountId;
 	}
 
 }

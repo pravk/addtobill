@@ -7,6 +7,12 @@ public class MerchantAccount extends BaseEntity {
 	@Id
 	private String merchantAccountId;
 	
+	public String getMerchantAccountId() {
+		return merchantAccountId;
+	}
+	public void setMerchantAccountId(String merchantAccountId) {
+		this.merchantAccountId = merchantAccountId;
+	}
 	private String merchantId;
 	
 	private double balance;

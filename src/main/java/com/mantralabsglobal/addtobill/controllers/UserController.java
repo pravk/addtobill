@@ -15,7 +15,7 @@ import com.mantralabsglobal.addtobill.exception.ResourceNotFoundException;
 import com.mantralabsglobal.addtobill.model.UserAccount;
 import com.mantralabsglobal.addtobill.model.Transaction;
 import com.mantralabsglobal.addtobill.model.User;
-import com.mantralabsglobal.addtobill.service.AccountService;
+import com.mantralabsglobal.addtobill.service.UserAccountService;
 import com.mantralabsglobal.addtobill.service.UserService;
 
 @RestController
@@ -24,7 +24,7 @@ public class UserController extends BaseController {
 	@Autowired
 	private UserService userService;
 	@Autowired
-	private AccountService accountService;
+	private UserAccountService accountService;
 	
 	
 	@RequestMapping(value="/user", method=RequestMethod.GET)

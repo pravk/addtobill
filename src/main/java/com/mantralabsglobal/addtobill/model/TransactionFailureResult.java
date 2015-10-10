@@ -2,6 +2,7 @@ package com.mantralabsglobal.addtobill.model;
 
 import com.mantralabsglobal.addtobill.exception.AccountNotFoundException;
 import com.mantralabsglobal.addtobill.exception.InsufficientBalanceException;
+import com.mantralabsglobal.addtobill.exception.InvalidRequestException;
 
 public class TransactionFailureResult extends TransactionResult {
 
@@ -18,6 +19,10 @@ public class TransactionFailureResult extends TransactionResult {
 
 	public TransactionFailureResult(AccountNotFoundException e) {
 		this("Account not found");
+	}
+
+	public TransactionFailureResult(InvalidRequestException e) {
+		this("Invalid request");
 	}
 
 	public String getReason() {

@@ -15,8 +15,7 @@ import com.mantralabsglobal.addtobill.model.Merchant;
 import com.mantralabsglobal.addtobill.model.Transaction;
 import com.mantralabsglobal.addtobill.model.TransactionFailureResult;
 import com.mantralabsglobal.addtobill.model.TransactionResult;
-import com.mantralabsglobal.addtobill.model.TransactionSuccessResult;
-import com.mantralabsglobal.addtobill.service.AccountService;
+import com.mantralabsglobal.addtobill.service.UserAccountService;
 import com.mantralabsglobal.addtobill.service.MerchantService;
 import com.mantralabsglobal.addtobill.service.TransactionService;
 
@@ -29,14 +28,14 @@ public class MerchantController extends BaseController{
 	TransactionService transactionService;
 	
 	@Autowired
-	private AccountService accountService;
+	private UserAccountService accountService;
 	
 	
-	public AccountService getAccountService() {
+	public UserAccountService getAccountService() {
 		return accountService;
 	}
 
-	public void setAccountService(AccountService accountService) {
+	public void setAccountService(UserAccountService accountService) {
 		this.accountService = accountService;
 	}
 	
@@ -53,7 +52,7 @@ public class MerchantController extends BaseController{
 	@RequestMapping(value="/merchant/transaction", method=RequestMethod.POST)
 	public TransactionResult createTransacton(@RequestBody Transaction transaction, Principal principal) throws InvalidRequestException{
 		try{
-			return transactionService.applyTransaction(transaction);
+			return transactionService.newTransaction(transaction);
 		}
 		catch(InsufficientBalanceException e)
 		{
@@ -63,20 +62,24 @@ public class MerchantController extends BaseController{
 	}
 	
 	@RequestMapping(value="/merchant/transaction", method=RequestMethod.PUT)
-	public TransactionResult updateTransacton(@RequestBody Transaction transaction, Principal principal){
-		//return accountService.updateTransaction(transaction);
-		return null;
+	public TransactionResult updateTransacton(@RequestBody Transaction transaction, Principal principal) throws InvalidRequestException{
+		try {
+			return transactionService.updateTransaction(transaction);
+		} catch (InsufficientBalanceException e) {
+
+			return new TransactionFailureResult(e);
+		}
 	}
 	
 	@RequestMapping(value="/merchant/transaction", method=RequestMethod.DELETE)
 	public TransactionResult cancelTransacton(@RequestParam(value="id", required=true) String transactionId, Principal principal){
-			/*Transaction transaction = accountService.cancelTransaction(transactionId);
-			if(transaction != null)
-				return new TransactionSuccessResult(transaction.getTransactionId(), transaction.getMerchantReferenceId());
-			else
-				return new TransactionFailureResult("Unknow error");*/
-		return null;
-	
+		try {
+			return transactionService.cancelTransaction(transactionId, principal.getName());
+			
+		} catch (InsufficientBalanceException e) {
+
+			return new TransactionFailureResult(e);
+		}
 	}
 	
 	

@@ -10,6 +10,7 @@ import com.mantralabsglobal.addtobill.exception.MerchantExistsException;
 import com.mantralabsglobal.addtobill.exception.UserExistsException;
 import com.mantralabsglobal.addtobill.model.UserAccount;
 import com.mantralabsglobal.addtobill.model.Merchant;
+import com.mantralabsglobal.addtobill.model.MerchantAccount;
 import com.mantralabsglobal.addtobill.model.User;
 
 import com.mantralabsglobal.addtobill.repository.UserRepository;
@@ -20,7 +21,7 @@ public class AdminService extends BaseService{
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
-	private AccountService accountService;
+	private UserAccountService accountService;
 	
 	public User getUserByEmail(String email) {
 		return userRepository.findOneByEmail(email);
@@ -68,7 +69,11 @@ public class AdminService extends BaseService{
 		Merchant m = merchantRepository.findByMerchantName(merchant.getMerchantName());
 		if(m == null)
 		{
-			return merchantRepository.save(merchant);
+			merchant = merchantRepository.save(merchant);
+			MerchantAccount account = new MerchantAccount();
+			account.setMerchantId(merchant.getMerchantId());
+			merchantAccountRepository.save(account);
+			return merchant;
 		}
 		else
 		{
@@ -83,5 +88,9 @@ public class AdminService extends BaseService{
 		Assert.hasText(user.getPassword());
 		Assert.notEmpty(user.getRoles());
 		return userRepository.save(user);
+	}
+
+	public Merchant getMerchant(String merchantId) {
+		return merchantRepository.findOne(merchantId);
 	}
 }
