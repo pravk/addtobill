@@ -18,12 +18,15 @@ import com.mantralabsglobal.addtobill.model.TransactionResult;
 import com.mantralabsglobal.addtobill.model.TransactionSuccessResult;
 import com.mantralabsglobal.addtobill.service.AccountService;
 import com.mantralabsglobal.addtobill.service.MerchantService;
+import com.mantralabsglobal.addtobill.service.TransactionService;
 
 @RestController
 public class MerchantController extends BaseController{
 	
 	@Autowired
 	MerchantService merchantService;
+	@Autowired
+	TransactionService transactionService;
 	
 	@Autowired
 	private AccountService accountService;
@@ -50,11 +53,7 @@ public class MerchantController extends BaseController{
 	@RequestMapping(value="/merchant/transaction", method=RequestMethod.POST)
 	public TransactionResult createTransacton(@RequestBody Transaction transaction, Principal principal) throws InvalidRequestException{
 		try{
-			Transaction t = accountService.createTransaction(transaction);
-			if(t != null)
-				return new TransactionSuccessResult(t.getTransactionId(), t.getMerchantReferenceId());
-			else
-				return new TransactionFailureResult("Unknow error");
+			return transactionService.applyTransaction(transaction);
 		}
 		catch(InsufficientBalanceException e)
 		{
@@ -71,11 +70,12 @@ public class MerchantController extends BaseController{
 	
 	@RequestMapping(value="/merchant/transaction", method=RequestMethod.DELETE)
 	public TransactionResult cancelTransacton(@RequestParam(value="id", required=true) String transactionId, Principal principal){
-			Transaction transaction = accountService.cancelTransaction(transactionId);
+			/*Transaction transaction = accountService.cancelTransaction(transactionId);
 			if(transaction != null)
 				return new TransactionSuccessResult(transaction.getTransactionId(), transaction.getMerchantReferenceId());
 			else
-				return new TransactionFailureResult("Unknow error");
+				return new TransactionFailureResult("Unknow error");*/
+		return null;
 	
 	}
 	

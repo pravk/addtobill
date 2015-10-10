@@ -17,7 +17,7 @@ public class TransactionValidator {
 	private MerchantRepository merchantRepository;
 	
 	public void validateNewTransaction(Transaction t){
-		Assert.hasText(t.getAccountId(), "Invalid account Id");
+		Assert.hasText(t.getUserAccountId(), "Invalid account Id");
 		Assert.hasText(t.getCurrency(), "Invalid currency");
 		Assert.hasText(t.getDebitCreditIndicator(), "Invalid credit/debit indicator");
 		Assert.hasText(t.getMerchantId(), "Invalid merchant Id");

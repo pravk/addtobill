@@ -9,13 +9,6 @@ public class Transaction {
 	
 	@Id
 	private String transactionId;
-	private String currency;
-	private double amount;
-	private String billingPeriodId;
-	private String accountId;
-	private String merchantId;
-	private String merchantReferenceId;
-	
 	public String getTransactionId() {
 		return transactionId;
 	}
@@ -24,9 +17,14 @@ public class Transaction {
 		this.transactionId = transactionId;
 	}
 
+	private String currency;
+	private double amount;
+	private String userAccountId;
+	private String merchantReferenceId;
 	private String debitCreditIndicator;
-	
+	private String merchantId;
 
+	
 	public String getDebitCreditIndicator() {
 		return debitCreditIndicator;
 	}
@@ -59,24 +57,22 @@ public class Transaction {
 		this.currency = currency;
 	}
 
-	public String getBillingPeriodId() {
-		return billingPeriodId;
+
+
+	public String getMerchantReferenceId() {
+		return merchantReferenceId;
 	}
 
-	public void setBillingPeriodId(String billingPeriodId) {
-		this.billingPeriodId = billingPeriodId;
+	public void setMerchantReferenceId(String merchantReferenceId) {
+		this.merchantReferenceId = merchantReferenceId;
 	}
 
-	public String getAccountId() {
-		return accountId;
+	public String getUserAccountId() {
+		return userAccountId;
 	}
 
-	public void setAccountId(String accountId) {
-		this.accountId = accountId;
-	}
-
-	public double getSignedAmount() {
-		return (isDebitTransaction()?-1:1)*getAmount();
+	public void setUserAccountId(String userAccountId) {
+		this.userAccountId = userAccountId;
 	}
 
 	public String getMerchantId() {
@@ -87,13 +83,8 @@ public class Transaction {
 		this.merchantId = merchantId;
 	}
 
-
-	public String getMerchantReferenceId() {
-		return merchantReferenceId;
-	}
-
-	public void setMerchantReferenceId(String merchantReferenceId) {
-		this.merchantReferenceId = merchantReferenceId;
+	public double getSignedAmount() {
+		return (isDebitTransaction()?-1:1)*getAmount();
 	}
 
 }

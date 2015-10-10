@@ -1,6 +1,5 @@
 package com.mantralabsglobal.addtobill.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.annotation.CreatedBy;
@@ -8,8 +7,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
-
-import com.mantralabsglobal.addtobill.exception.InsufficientBalanceException;
 
 public class Account{
 
@@ -21,19 +18,11 @@ public class Account{
 	
 	@Id
 	private String accountId;
+	private String userId;
 	private double creditLimit;
 	private double unbilledAmount;
 	private double remainingCreditBalance;
 	
-	private List<Transaction> transactionList;
-	public List<Transaction> getTransactionList() {
-		return transactionList;
-	}
-
-	public void setTransactionList(List<Transaction> transactionList) {
-		this.transactionList = transactionList;
-	}
-
 	private List<BillingPeriod> billingPeriodList;
 	
 	private String status;
@@ -128,22 +117,16 @@ public class Account{
 		this.remainingCreditBalance = remainingCreditBalance;
 	}
 
-	public synchronized boolean addToUnbilledTransactionList(Transaction t) throws InsufficientBalanceException{
-		if(hasSufficientBalance(t)){
-			if(transactionList == null)
-				transactionList = new ArrayList<>();
-			transactionList.add(t);
-			remainingCreditBalance = remainingCreditBalance + t.getSignedAmount();
-			return true;
-		}
-		else
-		{
-			throw new InsufficientBalanceException();
-		}
-	}
-	
-
-	protected boolean hasSufficientBalance(Transaction t) {
+	public boolean hasSufficientBalance(Transaction t) {
 		return getRemainingCreditBalance() + t.getSignedAmount()>=0;
 	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
 }

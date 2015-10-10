@@ -11,9 +11,7 @@ import com.mantralabsglobal.addtobill.exception.UserExistsException;
 import com.mantralabsglobal.addtobill.model.Account;
 import com.mantralabsglobal.addtobill.model.Merchant;
 import com.mantralabsglobal.addtobill.model.User;
-import com.mantralabsglobal.addtobill.model.UserAccount;
-import com.mantralabsglobal.addtobill.model.UserAccountRole;
-import com.mantralabsglobal.addtobill.repository.UserAccountRepository;
+
 import com.mantralabsglobal.addtobill.repository.UserRepository;
 
 @Service
@@ -21,8 +19,6 @@ public class AdminService extends BaseService{
 
 	@Autowired
 	private UserRepository userRepository;
-	@Autowired
-	private UserAccountRepository userAccountRepository;
 	@Autowired
 	private AccountService accountService;
 	
@@ -35,8 +31,8 @@ public class AdminService extends BaseService{
 	}
 
 
-	public List<UserAccount> getUserAccounts(String userId) {
-		return userAccountRepository.findAllByUserId(userId);
+	public List<Account> getUserAccounts(String userId) {
+		return accountRepository.findAllByUserId(userId);
 	}
 	
 	public User createUser(User user) throws UserExistsException {
@@ -46,12 +42,7 @@ public class AdminService extends BaseService{
 		if(userRepository.findOneByEmail(user.getEmail())== null)
 		{
 			User savedUser = userRepository.save(user);
-			Account account = accountService.createAccount(savedUser);
-			UserAccount userAccount = new UserAccount();
-			userAccount.setAccountId(account.getAccountId());
-			userAccount.setUserId(savedUser.getUserId());
-			userAccount.setRole(UserAccountRole.OWNER);
-			userAccountRepository.save(userAccount);
+			accountService.createAccount(savedUser);
 			return savedUser;
 		}
 		else

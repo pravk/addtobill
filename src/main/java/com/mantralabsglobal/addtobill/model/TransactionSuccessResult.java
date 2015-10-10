@@ -2,28 +2,30 @@ package com.mantralabsglobal.addtobill.model;
 
 public class TransactionSuccessResult extends TransactionResult {
 
-	private String transactionId;
-	private String vendorRefrenceId;
+	private Transaction userTransaction;
+	private Transaction merchantTransaction;
 
-	public TransactionSuccessResult(String transactionId, String vendorRefrenceId){
+	public TransactionSuccessResult(Transaction userTransaction, Transaction merchantTransaction){
 		super("Success");
-		this.setTransactionId(transactionId);
-		this.setVendorRefrenceId(vendorRefrenceId);
+		this.setUserTransaction(userTransaction);
+		this.setMerchantTransaction(merchantTransaction);
+	}
+
+	public Transaction getUserTransaction() {
+		return userTransaction;
+	}
+
+	public void setUserTransaction(Transaction userTransaction) {
+		this.userTransaction = userTransaction;
+	}
+
+	public Transaction getMerchantTransaction() {
+		return merchantTransaction;
+	}
+
+	public void setMerchantTransaction(Transaction merchantTransaction) {
+		this.merchantTransaction = merchantTransaction;
 	}
 	
-	public String getTransactionId() {
-		return transactionId;
-	}
-
-	public void setTransactionId(String transactionId) {
-		this.transactionId = transactionId;
-	}
-
-	public String getVendorRefrenceId() {
-		return vendorRefrenceId;
-	}
-
-	public void setVendorRefrenceId(String vendorRefrenceId) {
-		this.vendorRefrenceId = vendorRefrenceId;
-	}
+	
 }

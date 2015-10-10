@@ -15,7 +15,6 @@ import com.mantralabsglobal.addtobill.exception.ResourceNotFoundException;
 import com.mantralabsglobal.addtobill.model.Account;
 import com.mantralabsglobal.addtobill.model.Transaction;
 import com.mantralabsglobal.addtobill.model.User;
-import com.mantralabsglobal.addtobill.model.UserAccount;
 import com.mantralabsglobal.addtobill.service.AccountService;
 import com.mantralabsglobal.addtobill.service.UserService;
 
@@ -34,7 +33,7 @@ public class UserController extends BaseController {
 	}
 	
 	@RequestMapping(value="/user/accounts", method=RequestMethod.GET)
-	public List<UserAccount> getUserAccounts(Principal principal) throws ResourceNotFoundException{
+	public List<Account> getUserAccounts(Principal principal) throws ResourceNotFoundException{
 		
 		return userService.getUserAccounts(principal);
 	}

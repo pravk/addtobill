@@ -17,7 +17,6 @@ import com.mantralabsglobal.addtobill.exception.UserExistsException;
 import com.mantralabsglobal.addtobill.model.Account;
 import com.mantralabsglobal.addtobill.model.Merchant;
 import com.mantralabsglobal.addtobill.model.User;
-import com.mantralabsglobal.addtobill.model.UserAccount;
 import com.mantralabsglobal.addtobill.service.AdminService;
 
 @RestController
@@ -59,7 +58,7 @@ public class AdminController {
 	}
 	
 	@RequestMapping(value="/admin/accounts", method=RequestMethod.GET)
-	public List<UserAccount> getUserAccounts(@RequestParam(value="id") String userId) throws ResourceNotFoundException{
+	public List<Account> getUserAccounts(@RequestParam(value="id") String userId) throws ResourceNotFoundException{
 		return adminService.getUserAccounts(userId);
 	}
 
