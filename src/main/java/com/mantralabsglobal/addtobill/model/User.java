@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id;
 
 public class User {
 
+	public static final String ROLE_MERCHANT = "ROLE_MERCHANT";
 	@Id
 	private String userId;
 	private String password;

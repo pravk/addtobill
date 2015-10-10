@@ -6,6 +6,9 @@ public class Merchant {
 
 	@Id
 	private String merchantId;
+	
+	private String secretKey;
+	
 	public String getMerchantId() {
 		return merchantId;
 	}
@@ -18,6 +21,12 @@ public class Merchant {
 	}
 	public void setMerchantName(String merchantName) {
 		this.merchantName = merchantName;
+	}
+	public String getSecretKey() {
+		return secretKey;
+	}
+	public void setSecretKey(String secretKey) {
+		this.secretKey = secretKey;
 	}
 	
 }
