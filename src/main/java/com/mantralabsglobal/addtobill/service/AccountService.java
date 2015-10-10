@@ -43,6 +43,7 @@ public class AccountService  extends BaseService{
 		Account account = new Account();
 		account.setCreatedBy(user.getUserId());
 		account.setCreditLimit(5000);
+		account.setRemainingCreditBalance(account.getCreditLimit());
 		account.setStatus(Account.ACCOUNT_STATUS_ACTIVE);
 		return accountRepository.save(account);
 	}

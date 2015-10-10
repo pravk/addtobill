@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mantralabsglobal.addtobill.exception.AccountNotFoundException;
 import com.mantralabsglobal.addtobill.exception.InsufficientBalanceException;
-import com.mantralabsglobal.addtobill.exception.ResourceNotFoundException;
-import com.mantralabsglobal.addtobill.model.Account;
 import com.mantralabsglobal.addtobill.model.Transaction;
 import com.mantralabsglobal.addtobill.model.TransactionFailureResult;
 import com.mantralabsglobal.addtobill.model.TransactionResult;
@@ -23,13 +21,6 @@ public class AccountController extends BaseController{
 	@Autowired
 	private AccountService accountService;
 	
-	@RequestMapping(value="/account", method=RequestMethod.GET)
-	public Account getAccount(@RequestParam(value="id", required=true) String accountId) throws ResourceNotFoundException{
-		Account acct = accountService.getAccountDetails(accountId);
-		if(acct != null)
-			return acct;
-		throw new ResourceNotFoundException(); 
-	}
 	
 	public AccountService getAccountService() {
 		return accountService;

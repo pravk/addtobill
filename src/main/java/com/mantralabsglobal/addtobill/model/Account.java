@@ -15,6 +15,7 @@ public class Account{
 
 	public static final String ACCOUNT_STATUS_LOCKED = "Locked";
 	public static final String ACCOUNT_STATUS_ACTIVE = "Active";
+	public static final String ACCOUNT_STATUS_CREATED = "Created";
 	public static final String ACCOUNT_STATUS_CLOSED = "Closed";
 	
 	
