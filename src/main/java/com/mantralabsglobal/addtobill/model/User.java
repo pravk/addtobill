@@ -6,6 +6,7 @@ public class User {
 
 	@Id
 	private String userId;
+	
 	public String getUserId() {
 		return userId;
 	}

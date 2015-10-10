@@ -13,6 +13,8 @@ public class Transaction {
 	private double amount;
 	private String billingPeriodId;
 	private String accountId;
+	private String merchantId;
+	private String vendorReferenceId;
 	
 	public String getTransactionId() {
 		return transactionId;
@@ -75,6 +77,22 @@ public class Transaction {
 
 	public double getSignedAmount() {
 		return (isDebitTransaction()?1:-1)*getAmount();
+	}
+
+	public String getMerchantId() {
+		return merchantId;
+	}
+
+	public void setMerchantId(String merchantId) {
+		this.merchantId = merchantId;
+	}
+
+	public String getVendorReferenceId() {
+		return vendorReferenceId;
+	}
+
+	public void setVendorReferenceId(String vendorReferenceId) {
+		this.vendorReferenceId = vendorReferenceId;
 	}
 
 }

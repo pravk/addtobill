@@ -10,7 +10,7 @@ import com.mantralabsglobal.addtobill.repository.TransactionRepository;
 @Service
 public class TransactionService extends BaseService{
 	
-	private TransactionRepository transactionRepository;
+	/*private TransactionRepository transactionRepository;
 	private AccountService accountService;
 	
 	@Transactional(propagation=Propagation.REQUIRED, readOnly=false)
@@ -48,7 +48,7 @@ public class TransactionService extends BaseService{
 
 	public void setTransactionRepository(TransactionRepository transactionRepository) {
 		this.transactionRepository = transactionRepository;
-	}
+	}*/
 	
 	
 }

@@ -1,23 +1,20 @@
 package com.mantralabsglobal.addtobill.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
+import com.mantralabsglobal.addtobill.exception.AccountNotFoundException;
+import com.mantralabsglobal.addtobill.exception.InsufficientBalanceException;
 import com.mantralabsglobal.addtobill.model.Account;
-import com.mantralabsglobal.addtobill.model.BillingPeriod;
 import com.mantralabsglobal.addtobill.model.Transaction;
 import com.mantralabsglobal.addtobill.model.User;
 import com.mantralabsglobal.addtobill.repository.AccountRepository;
-import com.mantralabsglobal.addtobill.repository.BillingPeriodRepository;
 
 @Service
 public class AccountService  extends BaseService{
 
+	@Autowired
 	private AccountRepository accountRepository;
-	private BillingPeriodRepository periodRepository;
-
+	
 	public AccountRepository getAccountRepository() {
 		return accountRepository;
 	}
@@ -49,30 +46,29 @@ public class AccountService  extends BaseService{
 		account.setStatus(Account.ACCOUNT_STATUS_ACTIVE);
 		return accountRepository.save(account);
 	}
-	
-	public BillingPeriod getCurrentBillingPeriod(String accountId){
-		return periodRepository.findByAccountIdAndStatus(accountId, BillingPeriod.BILLING_PERIOD_STATUS_OPEN);
-	}
 
-	protected boolean canApplyTransaction(Transaction t, Account account, BillingPeriod period) {
-		return period.getRunningBalance() + t.getSignedAmount() <= account.getCreditLimit();
-	}
-	
-	@Transactional(propagation=Propagation.SUPPORTS, isolation=Isolation.READ_COMMITTED, readOnly=false)
-	public void applyTransaction(Transaction t) {
+	public Transaction createTransaction(Transaction t) throws InsufficientBalanceException, AccountNotFoundException {
 		Account account = accountRepository.findOne(t.getAccountId());
-		BillingPeriod period = getCurrentBillingPeriod(t.getAccountId());
-		if( !period.isOpen())
-			throw new RuntimeException("Billing period is not open");
 		
-		if(canApplyTransaction(t, account, period)){
-			period.setRunningBalance(period.getRunningBalance() + t.getSignedAmount());
-			periodRepository.save(period);
+		if(account != null){
+			account.addToUnbilledTransactionList(t);
+			accountRepository.save(account);
+			return t;
 		}
 		else
 		{
-			throw new RuntimeException("Insufficient funds. Unable to perform transaction");
+			throw new AccountNotFoundException();
 		}
+	}
+
+
+	public Transaction cancelTransaction(String transactionId) {
+		return null;
+	}
+
+	public Transaction updateTransaction(Transaction transaction) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

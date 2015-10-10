@@ -6,5 +6,7 @@ import com.mantralabsglobal.addtobill.model.User;
 
 public interface UserRepository extends CrudRepository<User, String> {
 
+	User findOneByEmail(String email);
+
 	
 }

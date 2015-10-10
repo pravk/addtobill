@@ -1,14 +1,9 @@
 package com.mantralabsglobal.addtobill.model;
 
-import java.util.List;
-
 import org.springframework.data.annotation.Id;
 
 public class UserAccount {
 
-	private static final String ROLE_VIEWER= "VIEWER"; 
-	private static final String ROLE_OWNER= "OWNER";
-	
 	@Id
 	private String userAccountId;
 	private String userId;
@@ -30,12 +25,14 @@ public class UserAccount {
 	public void setAccountId(String accountId) {
 		this.accountId = accountId;
 	}
-	public List<String> getRoles() {
-		return roles;
+	
+	public UserAccountRole getRole() {
+		return role;
 	}
-	public void setRoles(List<String> roles) {
-		this.roles = roles;
+	public void setRole(UserAccountRole role) {
+		this.role = role;
 	}
+
 	private String accountId;
-	private List<String> roles;
+	private UserAccountRole role;
 }
