@@ -35,7 +35,7 @@ dependencyManagement {
 
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
-    //compile("org.springframework.boot:spring-boot-starter-security")
+    compile("org.springframework.boot:spring-boot-starter-security")
 	//compile 'org.springframework.data:spring-data-rest'
 	compile 'com.google.code.gson:gson:1.7.2'
 	compile("org.springframework.boot:spring-boot-starter-data-mongodb")

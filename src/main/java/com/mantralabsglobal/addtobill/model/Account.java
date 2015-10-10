@@ -25,8 +25,15 @@ public class Account{
 	private double unbilledAmount;
 	private double remainingCreditBalance;
 	
-	private List<Transaction> unbilledTransactionList;
-	private List<Transaction> billedTransactionList;
+	private List<Transaction> transactionList;
+	public List<Transaction> getTransactionList() {
+		return transactionList;
+	}
+
+	public void setTransactionList(List<Transaction> transactionList) {
+		this.transactionList = transactionList;
+	}
+
 	private List<BillingPeriod> billingPeriodList;
 	
 	private String status;
@@ -113,22 +120,6 @@ public class Account{
 		this.unbilledAmount = unbilledAmount;
 	}
 
-	public List<Transaction> getUnbilledTransactionList() {
-		return unbilledTransactionList;
-	}
-
-	public void setUnbilledTransactionList(List<Transaction> unbilledTransactionList) {
-		this.unbilledTransactionList = unbilledTransactionList;
-	}
-
-	public List<Transaction> getBilledTransactionList() {
-		return billedTransactionList;
-	}
-
-	public void setBilledTransactionList(List<Transaction> billedTransactionList) {
-		this.billedTransactionList = billedTransactionList;
-	}
-
 	public double getRemainingCreditBalance() {
 		return remainingCreditBalance;
 	}
@@ -139,9 +130,9 @@ public class Account{
 
 	public synchronized boolean addToUnbilledTransactionList(Transaction t) throws InsufficientBalanceException{
 		if(hasSufficientBalance(t)){
-			if(unbilledTransactionList == null)
-				unbilledTransactionList = new ArrayList<>();
-			unbilledTransactionList.add(t);
+			if(transactionList == null)
+				transactionList = new ArrayList<>();
+			transactionList.add(t);
 			remainingCreditBalance = remainingCreditBalance + t.getSignedAmount();
 			return true;
 		}

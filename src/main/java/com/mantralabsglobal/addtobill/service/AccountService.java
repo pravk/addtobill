@@ -9,45 +9,16 @@ import com.mantralabsglobal.addtobill.model.Account;
 import com.mantralabsglobal.addtobill.model.Merchant;
 import com.mantralabsglobal.addtobill.model.Transaction;
 import com.mantralabsglobal.addtobill.model.User;
-import com.mantralabsglobal.addtobill.repository.AccountRepository;
 import com.mantralabsglobal.addtobill.repository.MerchantRepository;
+import com.mantralabsglobal.addtobill.repository.UserAccountRepository;
 import com.mantralabsglobal.addtobill.validators.TransactionValidator;
 
 @Service
 public class AccountService  extends BaseService{
-
-	@Autowired
-	private AccountRepository accountRepository;
-	@Autowired
-	private MerchantRepository merchantRepository;
 	
 	@Autowired
 	private TransactionValidator validator;
 	
-	
-	public AccountRepository getAccountRepository() {
-		return accountRepository;
-	}
-
-	public void setAccountRepository(AccountRepository accountRepository) {
-		this.accountRepository = accountRepository;
-	}
-	
-	public Account getAccountDetails(String accountId){
-		return accountRepository.findOne(accountId);
-	}
-	
-	public Account lockAccount(String accountId, String reason){
-		Account account = accountRepository.findOne(accountId);
-		account.setStatus(Account.ACCOUNT_STATUS_LOCKED);
-		return accountRepository.save(account);
-	}
-	
-	public Account closeAccount(String accountId, String reason){
-		Account account = accountRepository.findOne(accountId);
-		account.setStatus(Account.ACCOUNT_STATUS_CLOSED);
-		return accountRepository.save(account);
-	}
 	
 	public Account createAccount(User user){
 		Account account = new Account();
@@ -63,7 +34,7 @@ public class AccountService  extends BaseService{
 		validator.validateNewTransaction(t);
 		
 		Account account = accountRepository.findOne(t.getAccountId());
-		Merchant merchant = merchantRepository.findOne(t.getMerchantId());
+		Merchant merchant = getMerchantRepository().findOne(t.getMerchantId());
 		
 		if(account != null && merchant != null){
 			account.addToUnbilledTransactionList(t);
@@ -106,6 +77,16 @@ public class AccountService  extends BaseService{
 
 	public void setValidator(TransactionValidator validator) {
 		this.validator = validator;
+	}
+
+	
+
+	public UserAccountRepository getUserAccountRepository() {
+		return userAccountRepository;
+	}
+
+	public void setUserAccountRepository(UserAccountRepository userAccountRepository) {
+		this.userAccountRepository = userAccountRepository;
 	}
 
 }

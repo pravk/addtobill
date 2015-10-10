@@ -8,11 +8,17 @@ import com.mantralabsglobal.addtobill.model.Transaction;
 
 public interface AccountRepository extends CrudRepository<Account, String> {
 
-	 	@Query(value = "{ 'unbilledTransactionList.transactionId' : ?0, 'billedTransactionList.transactionId' : ?0 }", fields = "{ 'transaction' : 1 }")
+	 	@Query(value = "{ 'transactionList.transactionId' : ?0 }", fields = "{ 'transaction' : 1 }")
 	    Transaction findOneByTransactionId(String transactionId);
 
-		@Query(value = "{ 'unbilledTransactionList.merchantReferenceId' : ?0, 'billedTransactionList.merchantReferenceId' : ?0 }", fields = "{ 'transaction' : 1 }")
+		@Query(value = "{ 'transactionList.merchantReferenceId' : ?0}", fields = "{ 'transaction' : 1 }")
 	    Transaction findOneByReferenceId(String merchantReferenceId);
+
+		@Query(value = "{ 'transactionList.transactionId' : ?1, 'accountId' : ?0 }", fields = "{ 'transaction' : 1 }")
+	    Transaction findOneByAccountIdAndTransactionId(String accountId, String transactionId);
+
+		@Query(value = "{ 'transactionList.transactionId' : ?1, 'transactionList.merchantId' : ?1 }", fields = "{ 'transaction' : 1 }")
+		Transaction findOneByTransactionIdAndMerchantId(String transactionId, String merchantId);
 
 
 }

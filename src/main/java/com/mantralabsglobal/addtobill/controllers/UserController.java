@@ -1,9 +1,9 @@
 package com.mantralabsglobal.addtobill.controllers;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mantralabsglobal.addtobill.exception.InvalidRequestException;
 import com.mantralabsglobal.addtobill.exception.ResourceNotFoundException;
-import com.mantralabsglobal.addtobill.exception.UserExistsException;
 import com.mantralabsglobal.addtobill.model.Account;
+import com.mantralabsglobal.addtobill.model.Transaction;
 import com.mantralabsglobal.addtobill.model.User;
 import com.mantralabsglobal.addtobill.model.UserAccount;
 import com.mantralabsglobal.addtobill.service.AccountService;
 import com.mantralabsglobal.addtobill.service.UserService;
 
-@RestController(value="/user")
+@RestController
 public class UserController extends BaseController {
 
 	@Autowired
@@ -29,30 +29,14 @@ public class UserController extends BaseController {
 	
 	
 	@RequestMapping(value="/user", method=RequestMethod.GET)
-	public User getUser(@RequestParam(value="id", required=false) String userId, @RequestParam(value="email", required=false) String email) throws ResourceNotFoundException, InvalidRequestException{
-			
-		User user = null;
-		if(StringUtils.hasText(userId))
-		{
-			user = userService.getUser(userId);
-		}
-		else if(StringUtils.hasText(email) )
-		{
-			user = userService.getUserByEmail(email);
-		}
-		else
-		{
-			throw new InvalidRequestException();
-		}
-		
-		if(user != null)
-			return user;
-		throw new ResourceNotFoundException(); 
+	public User getUser(Principal principal) throws ResourceNotFoundException, InvalidRequestException{
+		return userService.getUserDetails(principal);
 	}
 	
 	@RequestMapping(value="/user/accounts", method=RequestMethod.GET)
-	public List<UserAccount> getUserAccounts(@RequestParam(value="id") String userId) throws ResourceNotFoundException{
-		return userService.getUserAccounts(userId);
+	public List<UserAccount> getUserAccounts(Principal principal) throws ResourceNotFoundException{
+		
+		return userService.getUserAccounts(principal);
 	}
 
 	@RequestMapping(value="/user/account", method=RequestMethod.GET)
@@ -63,11 +47,22 @@ public class UserController extends BaseController {
 		throw new ResourceNotFoundException(); 
 	}
 	
-	@RequestMapping(method=RequestMethod.POST)
+	/*@RequestMapping(value="/user/signup", method=RequestMethod.POST)
 	public User createUser(@RequestBody User user) throws UserExistsException{
 		return userService.createUser(user);
+	}*/
+	
+	@RequestMapping(value="/user/authorize", method=RequestMethod.POST)
+	public String getAuthorizationCode(@RequestBody Transaction transaction ) {
+		//return userService.createUser(user);
+		throw new sun.reflect.generics.reflectiveObjects.NotImplementedException();
 	}
-
+	
+	@RequestMapping(value="/user/transaction", method=RequestMethod.GET)
+	public Transaction getTransaction(@RequestParam(value="id", required=true) String transactionId, Principal principal){
+		return userService.getUserTransaction(principal, transactionId);
+	}
+	
 	public UserService getUserService() {
 		return userService;
 	}
