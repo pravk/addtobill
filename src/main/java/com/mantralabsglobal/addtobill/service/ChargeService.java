@@ -12,15 +12,11 @@ import com.mantralabsglobal.addtobill.model.Charge;
 import com.mantralabsglobal.addtobill.model.MerchantAccount;
 import com.mantralabsglobal.addtobill.repository.ChargeRepository;
 import com.mantralabsglobal.addtobill.repository.ChargeRequestRepository;
-import com.mantralabsglobal.addtobill.repository.TransactionRepository;
 import com.mantralabsglobal.addtobill.requestModel.ChargeRequest;
 import com.mantralabsglobal.addtobill.requestModel.UserToken;
 
 @Service
-public class TransactionService extends BaseService{
-	
-	@Autowired
-	protected TransactionRepository transactionRepository;
+public class ChargeService extends BaseService{
 	
 	@Autowired
 	protected ChargeRequestRepository chargeRequestRepository;

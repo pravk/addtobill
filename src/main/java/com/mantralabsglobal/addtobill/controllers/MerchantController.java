@@ -15,7 +15,7 @@ import com.mantralabsglobal.addtobill.model.Transaction;
 import com.mantralabsglobal.addtobill.requestModel.ChargeRequest;
 import com.mantralabsglobal.addtobill.service.UserAccountService;
 import com.mantralabsglobal.addtobill.service.MerchantService;
-import com.mantralabsglobal.addtobill.service.TransactionService;
+import com.mantralabsglobal.addtobill.service.ChargeService;
 
 @RestController
 public class MerchantController extends BaseController{
@@ -23,7 +23,7 @@ public class MerchantController extends BaseController{
 	@Autowired
 	MerchantService merchantService;
 	@Autowired
-	TransactionService transactionService;
+	ChargeService transactionService;
 	
 	@Autowired
 	private UserAccountService accountService;
