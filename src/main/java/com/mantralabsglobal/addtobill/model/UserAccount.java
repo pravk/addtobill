@@ -22,6 +22,7 @@ public class UserAccount{
 	private double creditLimit;
 	private double unbilledAmount;
 	private double remainingCreditBalance;
+	private String currency;
 	
 	private List<BillingPeriod> billingPeriodList;
 	
@@ -127,6 +128,14 @@ public class UserAccount{
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+
+	public String getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(String currency) {
+		this.currency = currency;
 	}
 
 }

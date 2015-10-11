@@ -22,6 +22,8 @@ public interface AccountRepository extends CrudRepository<UserAccount, String> {
 		@Query(value = "{ 'transactionList.transactionId' : ?1, 'transactionList.merchantId' : ?1 }", fields = "{ 'transaction' : 1 }")
 		Transaction findOneByTransactionIdAndMerchantId(String transactionId, String merchantId);
 
+		UserAccount findOneByUserIdAndCurrency(String userId, String currency);
+
 		List<UserAccount> findAllByUserId(String userId);
 
 

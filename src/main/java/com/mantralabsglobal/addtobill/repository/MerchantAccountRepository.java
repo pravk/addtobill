@@ -22,5 +22,7 @@ public interface MerchantAccountRepository extends CrudRepository<MerchantAccoun
 
 		MerchantAccount findOneByMerchantId(String merchantId);
 
+		MerchantAccount findOneByMerchantIdAndCurrency(String merchantId, String currency);
+
 
 }

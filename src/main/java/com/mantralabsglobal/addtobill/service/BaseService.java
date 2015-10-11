@@ -1,16 +1,18 @@
 package com.mantralabsglobal.addtobill.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.mantralabsglobal.addtobill.model.UserAccount;
+import com.mantralabsglobal.addtobill.crypto.DesEncryptor;
 import com.mantralabsglobal.addtobill.model.Transaction;
 import com.mantralabsglobal.addtobill.repository.AccountRepository;
 import com.mantralabsglobal.addtobill.repository.MerchantAccountRepository;
 import com.mantralabsglobal.addtobill.repository.MerchantRepository;
+import com.mantralabsglobal.addtobill.repository.TransactionRepository;
 import com.mantralabsglobal.addtobill.repository.UserRepository;
+import com.mantralabsglobal.addtobill.requestModel.UserToken;
 
 public abstract class BaseService {
 	
@@ -22,7 +24,10 @@ public abstract class BaseService {
 	protected UserRepository userRepository;
 	@Autowired
 	protected MerchantRepository merchantRepository;
-	
+	@Autowired
+	protected TransactionRepository transactionRepository;
+	@Autowired
+	protected DesEncryptor encrypter;
 	
 	protected <T> T clone(T object, Class<T> type) {
 		Gson gson = new Gson();
@@ -49,13 +54,21 @@ public abstract class BaseService {
 	}
 	
 	protected Transaction getUserTransaction(String userId, String transactionId) {
-		List<UserAccount> userAccountList = accountRepository.findAllByUserId(userId);
-		for(UserAccount userAccount: userAccountList){
-			Transaction transaction = accountRepository.findOneByAccountIdAndTransactionId(userAccount.getAccountId(), transactionId);
-			if(transaction != null)
-				return transaction;
-		}
-		return null;
+		Transaction transaction = transactionRepository.findOne(transactionId);
+		UserAccount userAccount = accountRepository.findOneByUserIdAndCurrency(userId, transaction.getCurrency());
+		return userAccount.getAccountId().equals(transaction.getTransactionAccountId())?transaction:null;
+	}
+	
+	protected UserToken resolveToken(String token) throws Exception {
+		String decryptedToken = encrypter.decrypt(token);
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.readValue(decryptedToken, UserToken.class);
+	}
+	
+	protected String resolveToken(UserToken userToken) throws Exception {
+		ObjectMapper mapper = new ObjectMapper();
+		String json = mapper.writeValueAsString(userToken);
+		return encrypter.encrypt(json);
 	}
 	
 }
