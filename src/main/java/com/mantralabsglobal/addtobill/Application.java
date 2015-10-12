@@ -14,7 +14,7 @@ import com.mantralabsglobal.addtobill.model.User;
 import com.mantralabsglobal.addtobill.repository.UserRepository;
 
 @SpringBootApplication
-@PropertySource("classpath:/com/mantralabsglobal/addtobill/config/application.properties")
+@PropertySource("classpath:application.properties")
 public class Application {
 
 	private final static EventBus chargeEventBus = new EventBus();
