@@ -25,7 +25,7 @@ public class AdminController {
 	@Autowired
 	private AdminService adminService;
 	
-	@RequestMapping(value="/admin/user", method=RequestMethod.GET)
+	@RequestMapping(value="admin/user", method=RequestMethod.GET)
 	public User getUser(@RequestParam(value="id", required=false) String userId, @RequestParam(value="email", required=false) String email) throws ResourceNotFoundException, InvalidRequestException{
 			
 		User user = null;
@@ -47,22 +47,22 @@ public class AdminController {
 		throw new ResourceNotFoundException(); 
 	}
 	
-	@RequestMapping(value="/admin/user", method=RequestMethod.POST)
+	@RequestMapping(value="admin/user", method=RequestMethod.POST)
 	public User createUser(@RequestBody User user) throws UserExistsException{
 		return adminService.createUser(user);
 	}
 	
-	@RequestMapping(value="/admin/user", method=RequestMethod.PUT)
+	@RequestMapping(value="admin/user", method=RequestMethod.PUT)
 	public User updateUser(@RequestBody User user) throws UserExistsException{
 		return adminService.updateUser(user);
 	}
 	
-	@RequestMapping(value="/admin/accounts", method=RequestMethod.GET)
+	@RequestMapping(value="admin/accounts", method=RequestMethod.GET)
 	public List<UserAccount> getUserAccounts(@RequestParam(value="id") String userId) throws ResourceNotFoundException{
 		return adminService.getUserAccounts(userId);
 	}
 
-	@RequestMapping(value="/admin/account", method=RequestMethod.GET)
+	@RequestMapping(value="admin/account", method=RequestMethod.GET)
 	public UserAccount getAccount(@RequestParam(value="id") String accountId) throws ResourceNotFoundException{
 		UserAccount acct = adminService.getAccountDetails(accountId);
 		if(acct != null)
@@ -70,12 +70,12 @@ public class AdminController {
 		throw new ResourceNotFoundException(); 
 	}
 	
-	@RequestMapping(value="/admin/merchant",method=RequestMethod.POST)
+	@RequestMapping(value="admin/merchant",method=RequestMethod.POST)
 	public Merchant createMerchant(@RequestBody Merchant merchant) throws MerchantExistsException{
 		return adminService.createMerchant(merchant);
 	}
 
-	@RequestMapping(value="/admin/merchant",method=RequestMethod.GET)
+	@RequestMapping(value="admin/merchant",method=RequestMethod.GET)
 	public Merchant createMerchant(@RequestParam(value="id", required=true) String merchantId) throws MerchantExistsException{
 		return adminService.getMerchant(merchantId);
 	}
