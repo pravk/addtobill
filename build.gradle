@@ -41,6 +41,7 @@ dependencies {
 	compile("org.springframework.boot:spring-boot-starter-data-mongodb")
 	compile 'commons-codec:commons-codec:1.10'
 	compile 'org.apache.commons:commons-lang3:3.4'
+	
 	compile 'com.google.guava:guava:18.0'
 	//compile("org.springframework.security.oauth:spring-security-oauth2:2.0.7.RELEASE")
     testCompile("junit:junit")
