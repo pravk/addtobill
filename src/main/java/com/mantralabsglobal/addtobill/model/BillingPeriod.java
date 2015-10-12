@@ -72,17 +72,8 @@ public class BillingPeriod {
 		this.closingBalance = closingBalance;
 	}
 
-	public double getRunningBalance() {
-		return runningBalance;
-	}
-
-	public void setRunningBalance(double runningBalance) {
-		this.runningBalance = runningBalance;
-	}
-
 	private double closingBalance;
-	private double runningBalance;
-
+	
 	public boolean isOpen() {
 		return BILLING_PERIOD_STATUS_OPEN.equals(getStatus());
 	}
