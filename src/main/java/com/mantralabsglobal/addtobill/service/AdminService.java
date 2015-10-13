@@ -8,7 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import com.mantralabsglobal.addtobill.exception.InsufficientBalanceException;
+import com.mantralabsglobal.addtobill.exception.InvalidRequestException;
 import com.mantralabsglobal.addtobill.exception.MerchantExistsException;
+import com.mantralabsglobal.addtobill.exception.UserAccountNotSetup;
 import com.mantralabsglobal.addtobill.exception.UserExistsException;
 import com.mantralabsglobal.addtobill.model.UserAccount;
 import com.mantralabsglobal.addtobill.model.Merchant;
@@ -104,6 +107,18 @@ public class AdminService extends BaseService{
 		Assert.hasText(userToken.getMerchantId());
 		Assert.hasText(userToken.getUserId());
 		Assert.isTrue(userToken.getAmount()>0);
+		
+		User user = userRepository.findOne(userToken.getUserId());
+		Merchant merchant = merchantRepository.findOne(userToken.getMerchantId());
+		if(user == null || merchant == null)
+			throw new InvalidRequestException("Invalid userid and/or merchantid");
+		
+		UserAccount userAccount = accountRepository.findOneByUserIdAndCurrency(user.getUserId(), userToken.getCurrency());
+		if(userAccount == null)
+			throw new UserAccountNotSetup();
+		
+		if(userAccount.getRemainingCreditBalance() < userToken.getAmount())
+			throw new InsufficientBalanceException();
 		
 		UserToken userToken2 = new UserToken();
 		userToken2.setAmount(userToken.getAmount());

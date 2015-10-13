@@ -7,7 +7,6 @@ public class UserToken {
 	private double amount;
 	private String currency;
 	private long expiry;
-	private String tokenId;
 	
 	public String getUserId() {
 		return userId;
@@ -38,12 +37,6 @@ public class UserToken {
 	}
 	public void setExpiry(long expiry) {
 		this.expiry = expiry;
-	}
-	public String getTokenId() {
-		return tokenId;
-	}
-	public void setTokenId(String tokenId) {
-		this.tokenId = tokenId;
 	}
 	
 }
