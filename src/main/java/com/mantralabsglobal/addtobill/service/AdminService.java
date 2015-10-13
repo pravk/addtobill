@@ -1,7 +1,9 @@
 package com.mantralabsglobal.addtobill.service;
 
+import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -14,6 +16,8 @@ import com.mantralabsglobal.addtobill.model.MerchantAccount;
 import com.mantralabsglobal.addtobill.model.User;
 
 import com.mantralabsglobal.addtobill.repository.UserRepository;
+import com.mantralabsglobal.addtobill.requestModel.UserToken;
+import com.mantralabsglobal.addtobill.responseModel.UserTokenResponse;
 
 @Service
 public class AdminService extends BaseService{
@@ -92,5 +96,24 @@ public class AdminService extends BaseService{
 
 	public Merchant getMerchant(String merchantId) {
 		return merchantRepository.findOne(merchantId);
+	}
+
+	public UserTokenResponse generateUserAuthToken(UserToken userToken) throws Exception {
+		Assert.notNull(userToken);
+		Assert.hasText(userToken.getCurrency());
+		Assert.hasText(userToken.getMerchantId());
+		Assert.hasText(userToken.getUserId());
+		Assert.isTrue(userToken.getAmount()>0);
+		
+		UserToken userToken2 = new UserToken();
+		userToken2.setAmount(userToken.getAmount());
+		userToken2.setCurrency(userToken.getCurrency());
+		userToken2.setMerchantId(userToken.getMerchantId());
+		userToken2.setUserId(userToken.getUserId());
+		userToken2.setExpiry(DateUtils.addMinutes(new Date(), 3).getTime());
+		String token = generateToken(userToken2);
+		UserTokenResponse response = new UserTokenResponse();
+		response.setToken(token);
+		return response;
 	}
 }

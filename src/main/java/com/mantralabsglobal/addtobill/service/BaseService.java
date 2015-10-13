@@ -65,7 +65,7 @@ public abstract class BaseService {
 		return mapper.readValue(decryptedToken, UserToken.class);
 	}
 	
-	protected String resolveToken(UserToken userToken) throws Exception {
+	protected String generateToken(UserToken userToken) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 		String json = mapper.writeValueAsString(userToken);
 		return encrypter.encrypt(json);
