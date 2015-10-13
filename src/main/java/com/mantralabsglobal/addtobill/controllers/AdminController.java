@@ -15,6 +15,7 @@ import com.mantralabsglobal.addtobill.exception.MerchantExistsException;
 import com.mantralabsglobal.addtobill.exception.ResourceNotFoundException;
 import com.mantralabsglobal.addtobill.exception.UserExistsException;
 import com.mantralabsglobal.addtobill.model.UserAccount;
+import com.mantralabsglobal.addtobill.requestModel.UserAccountRequest;
 import com.mantralabsglobal.addtobill.requestModel.UserToken;
 import com.mantralabsglobal.addtobill.responseModel.UserTokenResponse;
 import com.mantralabsglobal.addtobill.model.Merchant;
@@ -55,8 +56,9 @@ public class AdminController {
 	}
 	
 	@RequestMapping(value="admin/user", method=RequestMethod.POST)
-	public User createUser(@RequestBody User user) throws UserExistsException{
-		return adminService.createUser(user);
+	public UserAccount createUser(@RequestBody UserAccountRequest user) throws UserExistsException, InvalidRequestException{
+		
+		return adminService.createUserAccount(user.getUserId(), user.getCurrency());
 	}
 	
 	@RequestMapping(value="admin/user", method=RequestMethod.PUT)

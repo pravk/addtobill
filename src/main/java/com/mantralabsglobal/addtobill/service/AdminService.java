@@ -43,19 +43,19 @@ public class AdminService extends BaseService{
 		return accountRepository.findAllByUserId(userId);
 	}
 	
-	public User createUser(User user) throws UserExistsException {
-		Assert.notNull(user);
-		Assert.hasText(user.getEmail());
-		
-		if(userRepository.findOneByEmail(user.getEmail())== null)
+	public UserAccount createUserAccount(String  userId, String currency ) throws UserExistsException, InvalidRequestException {
+		Assert.notNull(userId);
+		User savedUser = userRepository.findOne(userId);
+		if(savedUser== null)
 		{
-			User savedUser = userRepository.save(user);
-			accountService.createAccount(savedUser);
-			return savedUser;
+			throw new InvalidRequestException("Invalid user Id");
 		}
-		else
-			throw new UserExistsException();
-	
+		else if(accountService.accountExists(savedUser, currency)){
+			throw new InvalidRequestException("Account already exists ");
+		}
+		else{
+			return accountService.createAccount(savedUser, currency);
+		}
 	}
 	
 	public UserAccount lockAccount(String accountId, String reason){
