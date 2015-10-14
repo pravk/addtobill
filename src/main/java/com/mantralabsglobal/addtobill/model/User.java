@@ -11,6 +11,11 @@ public class User {
 	private String userId;
 	private String password;
 	private List<String> roles;
+	private String billingAddressId;
+	private String emailId;
+	private boolean emailVerified;
+	private String phoneNumber;
+	private boolean phoneVerified;
 	
 	public String getUserId() {
 		return userId;
@@ -36,6 +41,36 @@ public class User {
 	}
 	public void setRoles(List<String> roles) {
 		this.roles = roles;
+	}
+	public String getBillingAddressId() {
+		return billingAddressId;
+	}
+	public void setBillingAddressId(String billingAddressId) {
+		this.billingAddressId = billingAddressId;
+	}
+	public String getEmailId() {
+		return emailId;
+	}
+	public void setEmailId(String emailId) {
+		this.emailId = emailId;
+	}
+	public boolean isEmailVerified() {
+		return emailVerified;
+	}
+	public void setEmailVerified(boolean emailVerified) {
+		this.emailVerified = emailVerified;
+	}
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+	public boolean isPhoneVerified() {
+		return phoneVerified;
+	}
+	public void setPhoneVerified(boolean phoneVerified) {
+		this.phoneVerified = phoneVerified;
 	}
 	
 }

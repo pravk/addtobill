@@ -16,7 +16,7 @@ apply plugin: "war"
 apply plugin: "io.spring.dependency-management"
 
 jar {
-    baseName = 'gs-rest-service'
+    baseName = 'addtobill'
     version =  '0.1.0'
 }
 
@@ -24,8 +24,8 @@ repositories {
     mavenCentral()
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 dependencyManagement {
      imports {

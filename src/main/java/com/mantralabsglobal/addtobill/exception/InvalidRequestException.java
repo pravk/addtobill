@@ -11,4 +11,11 @@ public class InvalidRequestException extends Exception {
 	 */
 	private static final long serialVersionUID = 2799032508854109701L;
 
+	public InvalidRequestException(){
+		super();
+	}
+	
+	public InvalidRequestException(String exception){
+		super(exception);
+	}
 }
