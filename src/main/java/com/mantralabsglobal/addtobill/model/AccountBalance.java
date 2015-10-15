@@ -2,22 +2,20 @@ package com.mantralabsglobal.addtobill.model;
 
 public class AccountBalance {
 
-	private double availableBalance;
-	private double pendingBalance;
+	private double runningBalance;
+	private long balanceUpdateDate;
 	
-	
-	public double getAvailableBalance() {
-		return availableBalance;
+	public double getRunningBalance() {
+		return runningBalance;
 	}
-	public void setAvailableBalance(double availableBalance) {
-		this.availableBalance = availableBalance;
+	public void setRunningBalance(double runningBalance) {
+		this.runningBalance = runningBalance;
 	}
-	public double getPendingBalance() {
-		return pendingBalance;
+	public long getBalanceUpdateDate() {
+		return balanceUpdateDate;
 	}
-	public void setPendingBalance(double pendingBalance) {
-		this.pendingBalance = pendingBalance;
+	public void setBalanceUpdateDate(long balanceUpdateDate) {
+		this.balanceUpdateDate = balanceUpdateDate;
 	}
-	
 	
 }

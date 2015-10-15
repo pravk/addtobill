@@ -78,4 +78,9 @@ public class ChargeBuilder {
 		Assert.hasText(charge.getCurrency());
 		return charge;
 	}
+
+	public ChargeBuilder setStatus(String chargeStatus) {
+		charge.setStatus(chargeStatus);
+		return this;
+	}
 }

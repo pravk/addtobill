@@ -4,7 +4,6 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.mantralabsglobal.addtobill.Application;
 import com.mantralabsglobal.addtobill.charge.ChargeProcessor;
 import com.mantralabsglobal.addtobill.exception.InvalidTokenException;
 import com.mantralabsglobal.addtobill.model.Charge;
@@ -51,8 +50,6 @@ public class ChargeService extends BaseService{
 
 
 	public Charge refundCharge(CancelChargeRequest request) throws Exception {
-		
-		Application.postRefundChargeEvent(request);
 		request = chargeRefundRequestRepository.save(request);
 		return refundChargeProcessor.processRequest(request);
 	}

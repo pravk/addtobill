@@ -10,14 +10,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mantralabsglobal.addtobill.exception.AccountExistsException;
 import com.mantralabsglobal.addtobill.exception.InvalidRequestException;
+import com.mantralabsglobal.addtobill.exception.MerchantDoesNotExistException;
 import com.mantralabsglobal.addtobill.exception.MerchantExistsException;
 import com.mantralabsglobal.addtobill.exception.ResourceNotFoundException;
 import com.mantralabsglobal.addtobill.exception.UserExistsException;
-import com.mantralabsglobal.addtobill.model.UserAccount;
+import com.mantralabsglobal.addtobill.requestModel.MerchantAccountRequest;
 import com.mantralabsglobal.addtobill.requestModel.UserAccountRequest;
 import com.mantralabsglobal.addtobill.requestModel.UserToken;
 import com.mantralabsglobal.addtobill.responseModel.UserTokenResponse;
+import com.mantralabsglobal.addtobill.model.Account;
 import com.mantralabsglobal.addtobill.model.Merchant;
 import com.mantralabsglobal.addtobill.model.User;
 import com.mantralabsglobal.addtobill.service.AdminService;
@@ -56,7 +59,7 @@ public class AdminController {
 	}
 	
 	@RequestMapping(value="admin/user", method=RequestMethod.POST)
-	public UserAccount createUser(@RequestBody UserAccountRequest user) throws UserExistsException, InvalidRequestException{
+	public Account createUser(@RequestBody UserAccountRequest user) throws UserExistsException, InvalidRequestException{
 		
 		return adminService.createUserAccount(user.getUserId(), user.getCurrency());
 	}
@@ -67,21 +70,21 @@ public class AdminController {
 	}
 	
 	@RequestMapping(value="admin/accounts", method=RequestMethod.GET)
-	public List<UserAccount> getUserAccounts(@RequestParam(value="id") String userId) throws ResourceNotFoundException{
+	public List<Account> getUserAccounts(@RequestParam(value="id") String userId) throws ResourceNotFoundException{
 		return adminService.getUserAccounts(userId);
 	}
 
 	@RequestMapping(value="admin/account", method=RequestMethod.GET)
-	public UserAccount getAccount(@RequestParam(value="id") String accountId) throws ResourceNotFoundException{
-		UserAccount acct = adminService.getAccountDetails(accountId);
+	public Account getAccount(@RequestParam(value="id") String accountId) throws ResourceNotFoundException{
+		Account acct = adminService.getAccountDetails(accountId);
 		if(acct != null)
 			return acct;
 		throw new ResourceNotFoundException(); 
 	}
 	
 	@RequestMapping(value="admin/merchant",method=RequestMethod.POST)
-	public Merchant createMerchant(@RequestBody Merchant merchant) throws MerchantExistsException{
-		return adminService.createMerchant(merchant);
+	public Account createMerchant(@RequestBody MerchantAccountRequest merchantAccountRequest) throws MerchantExistsException, AccountExistsException, MerchantDoesNotExistException{
+		return adminService.createMerchantAccount(merchantAccountRequest.getMerchantId(), merchantAccountRequest.getCurrency());
 	}
 
 	@RequestMapping(value="admin/merchant",method=RequestMethod.GET)

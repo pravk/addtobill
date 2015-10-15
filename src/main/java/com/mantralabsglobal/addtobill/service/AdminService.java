@@ -8,14 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import com.mantralabsglobal.addtobill.exception.AccountExistsException;
 import com.mantralabsglobal.addtobill.exception.InsufficientBalanceException;
 import com.mantralabsglobal.addtobill.exception.InvalidRequestException;
-import com.mantralabsglobal.addtobill.exception.MerchantExistsException;
+import com.mantralabsglobal.addtobill.exception.MerchantDoesNotExistException;
 import com.mantralabsglobal.addtobill.exception.UserAccountNotSetup;
 import com.mantralabsglobal.addtobill.exception.UserExistsException;
-import com.mantralabsglobal.addtobill.model.UserAccount;
+import com.mantralabsglobal.addtobill.model.Account;
+import com.mantralabsglobal.addtobill.model.AccountBalance;
+import com.mantralabsglobal.addtobill.model.CreditAccount;
 import com.mantralabsglobal.addtobill.model.Merchant;
-import com.mantralabsglobal.addtobill.model.MerchantAccount;
 import com.mantralabsglobal.addtobill.model.User;
 
 import com.mantralabsglobal.addtobill.repository.UserRepository;
@@ -39,11 +41,11 @@ public class AdminService extends BaseService{
 	}
 
 
-	public List<UserAccount> getUserAccounts(String userId) {
-		return accountRepository.findAllByUserId(userId);
+	public List<Account> getUserAccounts(String userId) {
+		return accountRepository.findAllByOwnerId(userId);
 	}
 	
-	public UserAccount createUserAccount(String  userId, String currency ) throws UserExistsException, InvalidRequestException {
+	public Account createUserAccount(String  userId, String currency ) throws UserExistsException, InvalidRequestException {
 		Assert.notNull(userId);
 		User savedUser = userRepository.findOne(userId);
 		if(savedUser== null)
@@ -58,33 +60,37 @@ public class AdminService extends BaseService{
 		}
 	}
 	
-	public UserAccount lockAccount(String accountId, String reason){
-		UserAccount account = accountRepository.findOne(accountId);
-		account.setStatus(UserAccount.ACCOUNT_STATUS_LOCKED);
-		return accountRepository.save(account);
-	}
-	
-	public UserAccount closeAccount(String accountId, String reason){
-		UserAccount account = accountRepository.findOne(accountId);
-		account.setStatus(UserAccount.ACCOUNT_STATUS_CLOSED);
-		return accountRepository.save(account);
-	}
-	
-	public Merchant createMerchant(Merchant merchant) throws MerchantExistsException {
-		Assert.notNull(merchant);
-		Assert.hasText(merchant.getMerchantName(), "Invalid merchant name");
-		Merchant m = merchantRepository.findByMerchantName(merchant.getMerchantName());
-		if(m == null)
+	public Account createMerchantAccount(String merchantId, String currency) throws AccountExistsException, MerchantDoesNotExistException {
+		Assert.notNull(merchantId, "Invalid merchant Id");
+		Assert.hasText(currency, "Invalid currency");
+		Merchant m = merchantRepository.findOne(merchantId);
+		if(m != null)
 		{
-			merchant = merchantRepository.save(merchant);
-			MerchantAccount account = new MerchantAccount();
-			account.setMerchantId(merchant.getMerchantId());
-			merchantAccountRepository.save(account);
-			return merchant;
+			Account acct = accountRepository.findOneByOwnerIdAndCurrency(merchantId, currency);
+			if(acct == null)
+			{
+				CreditAccount account = new CreditAccount();
+				account.setOwnerId(m.getMerchantId());
+				
+				account.setLowerLimit(0);
+				account.setUpperLimit(Double.MAX_VALUE);
+				
+				account.setAccountBalance(new AccountBalance());
+				account.getAccountBalance().setBalanceUpdateDate(new Date().getTime());
+				
+				account.setCurrency(currency);
+				
+				return accountRepository.save(account);
+			}
+			else
+			{
+				throw new AccountExistsException();
+			}
+			
 		}
 		else
 		{
-			throw new MerchantExistsException();
+			throw new MerchantDoesNotExistException();
 		}
 	}
 
@@ -113,11 +119,12 @@ public class AdminService extends BaseService{
 		if(user == null || merchant == null)
 			throw new InvalidRequestException("Invalid userid and/or merchantid");
 		
-		UserAccount userAccount = accountRepository.findOneByUserIdAndCurrency(user.getUserId(), userToken.getCurrency());
+		Account userAccount = accountRepository.findOneByOwnerIdAndCurrency(user.getUserId(), userToken.getCurrency());
 		if(userAccount == null)
 			throw new UserAccountNotSetup();
 		
-		if(userAccount.getRemainingCreditBalance() < userToken.getAmount())
+		double newBalance = userAccount.getAccountBalance().getRunningBalance() + userToken.getAmount();
+		if(newBalance > userAccount.getUpperLimit() || newBalance < userAccount.getLowerLimit())
 			throw new InsufficientBalanceException();
 		
 		UserToken userToken2 = new UserToken();

@@ -4,9 +4,7 @@ import java.security.Principal;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-
-import com.mantralabsglobal.addtobill.model.UserAccount;
-import com.mantralabsglobal.addtobill.model.Transaction;
+import com.mantralabsglobal.addtobill.model.Account;
 import com.mantralabsglobal.addtobill.model.User;
 
 @Service
@@ -26,16 +24,10 @@ public class UserService  extends BaseService {
 		return userRepository.findOneByEmail(principal.getName());
 	}
 
-	public List<UserAccount> getUserAccounts(Principal principal) {
+	public List<Account> getUserAccounts(Principal principal) {
 	 	String userId = getUserIdByEmail(principal.getName());
-		return accountRepository.findAllByUserId(userId);
+		return accountRepository.findAllByOwnerId(userId);
 	}
 
-	public Transaction getUserTransaction(Principal principal, String transactionId) {
-		String userId = getUserIdByEmail(principal.getName());
-		return getUserTransaction(userId, transactionId);
-	}
-
-	
-	
+		
 }

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mantralabsglobal.addtobill.exception.InvalidRequestException;
 import com.mantralabsglobal.addtobill.exception.ResourceNotFoundException;
-import com.mantralabsglobal.addtobill.model.UserAccount;
+import com.mantralabsglobal.addtobill.model.Account;
 import com.mantralabsglobal.addtobill.model.Transaction;
 import com.mantralabsglobal.addtobill.model.User;
 import com.mantralabsglobal.addtobill.service.UserAccountService;
@@ -33,14 +33,14 @@ public class UserController extends BaseController {
 	}
 	
 	@RequestMapping(value="/user/accounts", method=RequestMethod.GET)
-	public List<UserAccount> getUserAccounts(Principal principal) throws ResourceNotFoundException{
+	public List<Account> getUserAccounts(Principal principal) throws ResourceNotFoundException{
 		
 		return userService.getUserAccounts(principal);
 	}
 
 	@RequestMapping(value="/user/account", method=RequestMethod.GET)
-	public UserAccount getAccount(@RequestParam(value="id") String accountId) throws ResourceNotFoundException{
-		UserAccount acct = accountService.getAccountDetails(accountId);
+	public Account getAccount(@RequestParam(value="id") String accountId) throws ResourceNotFoundException{
+		Account acct = accountService.getAccountDetails(accountId);
 		if(acct != null)
 			return acct;
 		throw new ResourceNotFoundException(); 
@@ -55,11 +55,6 @@ public class UserController extends BaseController {
 	public String getAuthorizationCode(@RequestBody Transaction transaction ) {
 		//return userService.createUser(user);
 		throw new sun.reflect.generics.reflectiveObjects.NotImplementedException();
-	}
-	
-	@RequestMapping(value="/user/transaction", method=RequestMethod.GET)
-	public Transaction getTransaction(@RequestParam(value="id", required=true) String transactionId, Principal principal){
-		return userService.getUserTransaction(principal, transactionId);
 	}
 	
 	public UserService getUserService() {
