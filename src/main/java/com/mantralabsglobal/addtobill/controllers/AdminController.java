@@ -2,6 +2,7 @@ package com.mantralabsglobal.addtobill.controllers;
 
 import java.util.List;
 
+import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,16 +22,20 @@ import com.mantralabsglobal.addtobill.responseModel.UserTokenResponse;
 import com.mantralabsglobal.addtobill.model.Merchant;
 import com.mantralabsglobal.addtobill.model.User;
 import com.mantralabsglobal.addtobill.service.AdminService;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 @RestController
 public class AdminController {
 
 	@Autowired
 	private AdminService adminService;
-	
+	private final static Logger logger = LoggerFactory.getLogger(AdminController.class);
 	@RequestMapping(value="admin/user", method=RequestMethod.GET)
-	public User getUser(@RequestParam(value="id", required=false) String userId, @RequestParam(value="email", required=false) String email) throws ResourceNotFoundException, InvalidRequestException{
-			
+	public User getUser(@RequestParam(value="id", required=false) String userId, 
+			            @RequestParam(value="email", required=false) String email, String String) 
+			            throws ResourceNotFoundException, InvalidRequestException{
+		
+		logger.error("exception");
 		User user = null;
 		if(StringUtils.hasText(userId))
 		{
@@ -43,26 +48,30 @@ public class AdminController {
 		else
 		{
 			throw new InvalidRequestException();
+	
 		}
 		
 		if(user != null)
 			return user;
-		throw new ResourceNotFoundException(); 
+		throw new ResourceNotFoundException();
 	}
 	
 	@RequestMapping(value="admin/user/authToken", method=RequestMethod.POST)
 	public UserTokenResponse generateUserAuthToken(@RequestBody UserToken userToken) throws Exception{
+		logger.info("");
 		return adminService.generateUserAuthToken(userToken);
+		
 	}
 	
 	@RequestMapping(value="admin/user", method=RequestMethod.POST)
 	public UserAccount createUser(@RequestBody UserAccountRequest user) throws UserExistsException, InvalidRequestException{
-		
+		logger.info("user created");
 		return adminService.createUserAccount(user.getUserId(), user.getCurrency());
 	}
 	
 	@RequestMapping(value="admin/user", method=RequestMethod.PUT)
 	public User updateUser(@RequestBody User user) throws UserExistsException{
+		logger.error("");
 		return adminService.updateUser(user);
 	}
 	
