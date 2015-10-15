@@ -8,6 +8,7 @@ import com.mantralabsglobal.addtobill.model.UserAccount;
 import com.mantralabsglobal.addtobill.crypto.DesEncryptor;
 import com.mantralabsglobal.addtobill.model.Transaction;
 import com.mantralabsglobal.addtobill.repository.AccountRepository;
+import com.mantralabsglobal.addtobill.repository.ChargeRepository;
 import com.mantralabsglobal.addtobill.repository.MerchantAccountRepository;
 import com.mantralabsglobal.addtobill.repository.MerchantRepository;
 import com.mantralabsglobal.addtobill.repository.TransactionRepository;
@@ -22,6 +23,8 @@ public abstract class BaseService {
 	protected MerchantAccountRepository merchantAccountRepository;
 	@Autowired
 	protected UserRepository userRepository;
+	@Autowired
+	protected ChargeRepository chargeRepository;
 	@Autowired
 	protected MerchantRepository merchantRepository;
 	@Autowired

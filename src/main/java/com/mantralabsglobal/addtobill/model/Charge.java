@@ -15,13 +15,13 @@ public class Charge extends BaseEntity {
 	
 	@Id
 	private String chargeId;
+	private long chargeDate;
 	private double amount;
 	private double applicationFee;
-	private String transactionId;
 	private String currency;
 	private String userId;
 	private String description;
-	private String merchantAccountId;
+	private String merchantId;
 	private String failureCode;
 	private String failureMessage;
 	private Map<String,String> metadata;
@@ -52,12 +52,7 @@ public class Charge extends BaseEntity {
 	public void setApplicationFee(double applicationFee) {
 		this.applicationFee = applicationFee;
 	}
-	public String getTransactionId() {
-		return transactionId;
-	}
-	public void setTransactionId(String transactionId) {
-		this.transactionId = transactionId;
-	}
+	
 	public String getCurrency() {
 		return currency;
 	}
@@ -76,12 +71,7 @@ public class Charge extends BaseEntity {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public String getMerchantAccountId() {
-		return merchantAccountId;
-	}
-	public void setMerchantAccountId(String merchantAccountId) {
-		this.merchantAccountId = merchantAccountId;
-	}
+	
 	public String getFailureCode() {
 		return failureCode;
 	}
@@ -147,6 +137,18 @@ public class Charge extends BaseEntity {
 	}
 	public void setLinkedChargeId(String linkedChargeId) {
 		this.linkedChargeId = linkedChargeId;
+	}
+	public void setMerchantId(String merchantId) {
+		this.merchantId = merchantId;
+	}
+	public String getMerchantId() {
+		return this.merchantId ;
+	}
+	public long getChargeDate() {
+		return chargeDate;
+	}
+	public void setChargeDate(long chargeDate) {
+		this.chargeDate = chargeDate;
 	}
 	
 }

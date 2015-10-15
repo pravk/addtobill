@@ -8,10 +8,12 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.PropertySource;
 
 import com.google.common.eventbus.EventBus;
-import com.mantralabsglobal.addtobill.charge.ChargeProcessor;
-import com.mantralabsglobal.addtobill.model.Charge;
+import com.mantralabsglobal.addtobill.charge.NewChargeProcessor;
+import com.mantralabsglobal.addtobill.charge.RefundChargeProcessor;
 import com.mantralabsglobal.addtobill.model.User;
 import com.mantralabsglobal.addtobill.repository.UserRepository;
+import com.mantralabsglobal.addtobill.requestModel.CancelChargeRequest;
+import com.mantralabsglobal.addtobill.requestModel.NewChargeRequest;
 
 @SpringBootApplication
 @PropertySource("classpath:application.properties")
@@ -32,10 +34,15 @@ public class Application {
         	user.setRoles( Arrays.asList("ROLE_ADMIN"));
         	respository.save(user);
         }
-        chargeEventBus.register(context.getBean(ChargeProcessor.class));
+        chargeEventBus.register(context.getBean(NewChargeProcessor.class));
+        chargeEventBus.register(context.getBean(RefundChargeProcessor.class));
     }
 
-	public static void postChargeEvent(Charge charge) {
+	public static void postChargeEvent(NewChargeRequest charge) {
+		chargeEventBus.post(charge);
+	}
+	
+	public static void postRefundChargeEvent(CancelChargeRequest charge) {
 		chargeEventBus.post(charge);
 	}
 }
