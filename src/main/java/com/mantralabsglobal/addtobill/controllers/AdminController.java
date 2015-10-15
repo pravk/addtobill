@@ -16,20 +16,27 @@ import com.mantralabsglobal.addtobill.exception.MerchantDoesNotExistException;
 import com.mantralabsglobal.addtobill.exception.MerchantExistsException;
 import com.mantralabsglobal.addtobill.exception.ResourceNotFoundException;
 import com.mantralabsglobal.addtobill.exception.UserExistsException;
+import com.mantralabsglobal.addtobill.requestModel.CancelChargeRequest;
 import com.mantralabsglobal.addtobill.requestModel.MerchantAccountRequest;
+import com.mantralabsglobal.addtobill.requestModel.NewChargeRequest;
 import com.mantralabsglobal.addtobill.requestModel.UserAccountRequest;
 import com.mantralabsglobal.addtobill.requestModel.UserToken;
 import com.mantralabsglobal.addtobill.responseModel.UserTokenResponse;
 import com.mantralabsglobal.addtobill.model.Account;
+import com.mantralabsglobal.addtobill.model.Charge;
 import com.mantralabsglobal.addtobill.model.Merchant;
 import com.mantralabsglobal.addtobill.model.User;
 import com.mantralabsglobal.addtobill.service.AdminService;
+import com.mantralabsglobal.addtobill.service.ChargeService;
 
 @RestController
 public class AdminController {
 
 	@Autowired
 	private AdminService adminService;
+	
+	@Autowired
+	private ChargeService chargeService;
 	
 	@RequestMapping(value="admin/user", method=RequestMethod.GET)
 	public User getUser(@RequestParam(value="id", required=false) String userId, @RequestParam(value="email", required=false) String email) throws ResourceNotFoundException, InvalidRequestException{
@@ -91,6 +98,17 @@ public class AdminController {
 	public Merchant createMerchant(@RequestParam(value="id", required=true) String merchantId) throws MerchantExistsException{
 		return adminService.getMerchant(merchantId);
 	}
+	
+	@RequestMapping(value="/admin/charge", method=RequestMethod.POST)
+	public Charge createCharge(@RequestBody NewChargeRequest chargeAttributes) throws Exception{
+		return chargeService.newCharge(chargeAttributes);
+	}
+	
+	@RequestMapping(value="/admin/refund", method=RequestMethod.POST)
+	public Charge cancelCharge(@RequestBody CancelChargeRequest chargeAttributes) throws Exception{
+		return chargeService.refundCharge(chargeAttributes);
+	}
+	
 	public AdminService getAdminService() {
 		return adminService;
 	}
