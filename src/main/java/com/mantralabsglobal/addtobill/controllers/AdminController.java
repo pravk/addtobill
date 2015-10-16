@@ -99,12 +99,12 @@ public class AdminController {
 		return adminService.getMerchant(merchantId);
 	}
 	
-	@RequestMapping(value="/admin/charge", method=RequestMethod.POST)
+	@RequestMapping(value="admin/charge", method=RequestMethod.POST)
 	public Charge createCharge(@RequestBody NewChargeRequest chargeAttributes) throws Exception{
 		return chargeService.newCharge(chargeAttributes);
 	}
 	
-	@RequestMapping(value="/admin/refund", method=RequestMethod.POST)
+	@RequestMapping(value="admin/refund", method=RequestMethod.POST)
 	public Charge cancelCharge(@RequestBody CancelChargeRequest chargeAttributes) throws Exception{
 		return chargeService.refundCharge(chargeAttributes);
 	}
