@@ -42,9 +42,9 @@ public class ChargeService extends BaseService{
 		if(token.getExpiry() < new Date().getTime()
 			|| !token.getCurrency().equals(chargeAttributes.getCurrency())
 			|| token.getAmount() != chargeAttributes.getAmount()
-			|| token.getMerchantId() != chargeAttributes.getDescription()
+			|| token.getMerchantId() != chargeAttributes.getMerchantId()
 			|| token.getUserId() != chargeAttributes.getUserId()){
-				throw new InvalidTokenException();
+				throw new InvalidTokenException("Invalid Token exception");
 			}
 	}
 
