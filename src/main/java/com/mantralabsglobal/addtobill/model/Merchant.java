@@ -16,7 +16,7 @@ public class Merchant {
 	private String merchantName;
 	private String businessPrimaryColor;
 	private String busiessUrl;
-	private String chargesEnabled;
+	private boolean chargesEnabled;
 	private List<String> supportedCurrencies;
 	private String defaultCurrency;
 	private String displayName;
@@ -58,10 +58,10 @@ public class Merchant {
 	public void setBusiessUrl(String busiessUrl) {
 		this.busiessUrl = busiessUrl;
 	}
-	public String getChargesEnabled() {
+	public boolean getChargesEnabled() {
 		return chargesEnabled;
 	}
-	public void setChargesEnabled(String chargesEnabled) {
+	public void setChargesEnabled(boolean chargesEnabled) {
 		this.chargesEnabled = chargesEnabled;
 	}
 	public List<String> getSupportedCurrencies() {

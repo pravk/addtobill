@@ -7,12 +7,15 @@ import org.springframework.data.annotation.Id;
 public class User {
 
 	public static final String ROLE_MERCHANT = "ROLE_MERCHANT";
+	public static final String ROLE_USER = "ROLE_USER";
+	public static final String ROLE_ADMIN = "ROLE_ADMIN";
+	
 	@Id
 	private String userId;
 	private String password;
 	private List<String> roles;
 	private String billingAddressId;
-	private String emailId;
+	private String email;
 	private boolean emailVerified;
 	private String phoneNumber;
 	private boolean phoneVerified;
@@ -23,7 +26,7 @@ public class User {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-	private String email;
+	
 	public String getEmail() {
 		return email;
 	}
@@ -47,12 +50,6 @@ public class User {
 	}
 	public void setBillingAddressId(String billingAddressId) {
 		this.billingAddressId = billingAddressId;
-	}
-	public String getEmailId() {
-		return emailId;
-	}
-	public void setEmailId(String emailId) {
-		this.emailId = emailId;
 	}
 	public boolean isEmailVerified() {
 		return emailVerified;

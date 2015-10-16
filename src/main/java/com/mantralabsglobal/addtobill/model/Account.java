@@ -2,6 +2,7 @@ package com.mantralabsglobal.addtobill.model;
 
 import org.springframework.data.annotation.Id;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mantralabsglobal.addtobill.exception.InsufficientBalanceException;
 
 public abstract class Account extends BaseEntity {
@@ -53,10 +54,12 @@ public abstract class Account extends BaseEntity {
 		this.ownerId = ownerId;
 	}
 
+	@JsonIgnore
 	public boolean isCreditAccount() {
 		return "C".equals(getAccountType());
 	}
 	
+	@JsonIgnore
 	public boolean isDebitAccount() {
 		return "D".equals(getAccountType());
 	}

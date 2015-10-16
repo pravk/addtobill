@@ -36,6 +36,7 @@ dependencyManagement {
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
     compile("org.springframework.boot:spring-boot-starter-security")
+    compile("org.springframework.boot:spring-boot-starter-test")
 	//compile 'org.springframework.data:spring-data-rest'
 	compile 'com.google.code.gson:gson:1.7.2'
 	compile("org.springframework.boot:spring-boot-starter-data-mongodb")
@@ -43,8 +44,13 @@ dependencies {
 	compile 'org.apache.commons:commons-lang3:3.4'
 	compile 'com.google.guava:guava:18.0'
 	compile("org.springframework.boot:spring-boot-starter-actuator")
+	compile("org.springframework:spring-jdbc")
+    compile("com.h2database:h2")
+    compile 'org.springframework.boot:spring-boot-autoconfigure:1.2.6.RELEASE'
 	//compile("org.springframework.security.oauth:spring-security-oauth2:2.0.7.RELEASE")
     testCompile("junit:junit")
+    testCompile 'com.jayway.restassured:rest-assured:2.6.0'
+    testCompile group: "de.flapdoodle.embed", name: "de.flapdoodle.embed.mongo", version: "1.50.0"
 }
 
 task wrapper(type: Wrapper) {

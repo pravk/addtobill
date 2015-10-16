@@ -1,7 +1,11 @@
 package com.mantralabsglobal.addtobill.requestModel;
 
+import org.springframework.data.annotation.Id;
+
 public class NewChargeRequest extends ChargeRequest{
 
+	@Id
+	private String chargeRequestId;
 	private String userId;
 	private String token;
 	private String merchantId;
