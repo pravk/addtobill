@@ -38,7 +38,7 @@ public class ChargeService extends BaseService{
 	}
 
 
-	public void validateToken(UserToken token, NewChargeRequest chargeAttributes) throws InvalidTokenException {
+	protected void validateToken(UserToken token, NewChargeRequest chargeAttributes) throws InvalidTokenException {
 		if(token.getExpiry() < new Date().getTime())
 		{
 			throw new InvalidTokenException("Token is expired!");
@@ -49,11 +49,11 @@ public class ChargeService extends BaseService{
 		else if (token.getAmount() != chargeAttributes.getAmount()){
 			throw new InvalidTokenException("Invalid Amount");
 		}
-		else if(token.getMerchantId() != chargeAttributes.getMerchantId())
+		else if(!token.getMerchantId().equals(chargeAttributes.getMerchantId()))
 		{
 			throw new InvalidTokenException("Invalid Merchant Id");
 		}
-		else if( token.getUserId() != chargeAttributes.getUserId()){
+		else if(! token.getUserId().equals(chargeAttributes.getUserId())){
 			throw new InvalidTokenException("Invalid User Id");
 		}
 		
