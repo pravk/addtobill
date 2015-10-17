@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.time.DateUtils;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -140,5 +141,34 @@ public class AdminService extends BaseService{
 		UserTokenResponse response = new UserTokenResponse();
 		response.setToken(token);
 		return response;
+	}
+
+	public Merchant createMerchant(Merchant merchant) throws AccountExistsException, MerchantDoesNotExistException {
+		Assert.notNull(merchant);
+		
+		Assert.hasText(merchant.getDefaultCurrency(), "Default currency not specified");
+		Assert.hasText(merchant.getDisplayName(), "Display name not speciied");
+		Assert.hasText(merchant.getMerchantName(), "Merchant name not specified");
+		Assert.hasText(merchant.getSupportEmail(), "Support Email not specified");
+		Assert.hasText(merchant.getSupportPhone(), "Support phone not specified");
+		Assert.hasText(merchant.getBusinessUrl(), "Business URL not specified");
+		Assert.hasText(merchant.getEmail(), "Email not spscified");
+		
+		Merchant m = merchantRepository.findOneByBusinessUrl(merchant.getBusinessUrl());
+		Assert.isNull(m, "Duplicate business url");
+		m = merchantRepository.findOneByMerchantName(merchant.getMerchantName());
+		Assert.isNull(m, "Duplicate business name");
+		
+		m = merchantRepository.findOneByDisplayName(merchant.getDisplayName());
+		Assert.isNull(m, "Duplicate display name");
+		
+		merchant.setChargesEnabled(false);
+		merchant.setTransfersEnabled(false);
+		merchant.setSecretKey(ObjectId.get().toString());
+		merchant = merchantRepository.save(merchant);
+		
+		createMerchantAccount(merchant.getMerchantId(), merchant.getDefaultCurrency());
+		
+		return merchant;
 	}
 }

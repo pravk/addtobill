@@ -15,9 +15,9 @@ public class Merchant extends BaseEntity{
 	private String secretKey;
 	private String merchantName;
 	private String businessPrimaryColor;
-	private String busiessUrl;
+	private String businessUrl;
 	private boolean chargesEnabled;
-	private List<String> supportedCurrencies;
+	//private List<String> supportedCurrencies;
 	private String defaultCurrency;
 	private String displayName;
 	private String email;
@@ -52,11 +52,11 @@ public class Merchant extends BaseEntity{
 	public void setBusinessPrimaryColor(String businessPrimaryColor) {
 		this.businessPrimaryColor = businessPrimaryColor;
 	}
-	public String getBusiessUrl() {
-		return busiessUrl;
+	public String getBusinessUrl() {
+		return businessUrl;
 	}
-	public void setBusiessUrl(String busiessUrl) {
-		this.busiessUrl = busiessUrl;
+	public void setBusinessUrl(String busiessUrl) {
+		this.businessUrl = busiessUrl;
 	}
 	public boolean isChargesEnabled() {
 		return chargesEnabled;
@@ -64,12 +64,7 @@ public class Merchant extends BaseEntity{
 	public void setChargesEnabled(boolean chargesEnabled) {
 		this.chargesEnabled = chargesEnabled;
 	}
-	public List<String> getSupportedCurrencies() {
-		return supportedCurrencies;
-	}
-	public void setSupportedCurrencies(List<String> supportedCurrencies) {
-		this.supportedCurrencies = supportedCurrencies;
-	}
+	
 	public String getDefaultCurrency() {
 		return defaultCurrency;
 	}
