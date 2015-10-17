@@ -16,6 +16,7 @@ import com.mantralabsglobal.addtobill.repository.AccountRepository;
 import com.mantralabsglobal.addtobill.repository.ChargeRepository;
 import com.mantralabsglobal.addtobill.repository.TransactionRepository;
 import com.mantralabsglobal.addtobill.requestModel.ChargeRequest;
+import com.mantralabsglobal.addtobill.service.DistributedLockService;
 
 @Component
 public abstract class ChargeProcessor<T extends ChargeRequest> {
@@ -25,6 +26,10 @@ public abstract class ChargeProcessor<T extends ChargeRequest> {
 	
 	@Autowired
 	protected TransactionRepository transactionRepository;
+	
+	@Autowired
+	protected DistributedLockService lockService;
+	
 	
 	@Autowired
 	protected ChargeRepository chargeRepository;
@@ -37,21 +42,36 @@ public abstract class ChargeProcessor<T extends ChargeRequest> {
 			
 			charge = chargeRepository.save(charge);
 			
-			Map<Account, Transaction> transactionMap = createTransactions(charge);
-			
-			updateAccountBalance(transactionMap);
-			
-			transactionRepository.save(transactionMap.values());
-			
-			accountRepository.save(transactionMap.keySet());
-			
-			charge.setStatus(Charge.CHARGE_STATUS_SUCCESS);
-			
-			charge = chargeRepository.save(charge);
+			if(lockService.acquireLock(charge.getUserId()))
+			{		
+				try
+				{
+					Map<Account, Transaction> transactionMap = createTransactions(charge);
+					
+					updateAccountBalance(transactionMap);
+					
+					transactionRepository.save(transactionMap.values());
+					
+					accountRepository.save(transactionMap.keySet());
+					
+					charge.setStatus(Charge.CHARGE_STATUS_SUCCESS);
+					
+					charge = chargeRepository.save(charge);
+				}
+				catch(Exception exp)
+				{
+					charge.setStatus(Charge.CHARGE_STATUS_FAILED);
+					charge.setFailureMessage(exp.getMessage());
+					charge = chargeRepository.save(charge);
+					throw exp;
+				}
+				finally{
+					lockService.releaseLock(charge.getUserId());
+				}
+			}
 			
 			return charge;
 	}
-		
 
 	
 	protected void updateAccountBalance(Map<Account, Transaction> transactionMap) throws InsufficientBalanceException {
@@ -64,8 +84,6 @@ public abstract class ChargeProcessor<T extends ChargeRequest> {
 			acctBalance.setBalanceUpdateDate(new Date().getTime());
 		}
 	}
-
-
 
 	protected abstract Map<Account, Transaction> createTransactions(Charge charge) ;
 

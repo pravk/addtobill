@@ -45,12 +45,13 @@ dependencies {
 	compile 'com.google.guava:guava:18.0'
 	compile("org.springframework.boot:spring-boot-starter-actuator")
 	compile("org.springframework:spring-jdbc")
-    compile("com.h2database:h2")
+	compile 'mysql:mysql-connector-java:5.1.36'
+    //compile("com.h2database:h2")
     compile 'org.springframework.boot:spring-boot-autoconfigure:1.2.6.RELEASE'
 	//compile("org.springframework.security.oauth:spring-security-oauth2:2.0.7.RELEASE")
     testCompile("junit:junit")
-    testCompile 'com.jayway.restassured:rest-assured:2.6.0'
-    testCompile group: "de.flapdoodle.embed", name: "de.flapdoodle.embed.mongo", version: "1.50.0"
+    //testCompile 'com.jayway.restassured:rest-assured:2.6.0'
+    testCompile ('com.github.fakemongo:fongo:2.0.2')
 }
 
 task wrapper(type: Wrapper) {

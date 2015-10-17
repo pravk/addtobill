@@ -34,6 +34,7 @@ public class ChargeBuilder {
 	}
 	
 	public ChargeBuilder setUser(String userId){
+		charge.setUserId(userId);
 		return this;
 	}
 	
