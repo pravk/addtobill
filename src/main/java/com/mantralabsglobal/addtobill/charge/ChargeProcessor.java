@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.mantralabsglobal.addtobill.exception.ChargeFailedException;
 import com.mantralabsglobal.addtobill.exception.InsufficientBalanceException;
 import com.mantralabsglobal.addtobill.model.Account;
 import com.mantralabsglobal.addtobill.model.AccountBalance;
@@ -68,6 +69,13 @@ public abstract class ChargeProcessor<T extends ChargeRequest> {
 				finally{
 					lockService.releaseLock(charge.getUserId());
 				}
+			}
+			else
+			{
+				charge.setStatus(Charge.CHARGE_STATUS_FAILED);
+				charge.setFailureMessage("Another transaction in process");
+				charge = chargeRepository.save(charge);
+				throw new ChargeFailedException(charge.getFailureMessage());
 			}
 			
 			return charge;
