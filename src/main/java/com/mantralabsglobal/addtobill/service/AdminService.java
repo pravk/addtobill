@@ -119,6 +119,9 @@ public class AdminService extends BaseService{
 		if(user == null || merchant == null)
 			throw new InvalidRequestException("Invalid userid and/or merchantid");
 		
+		if(!merchant.isChargesEnabled())
+			throw new InvalidRequestException("Charge not enabled for the Merchant");
+		
 		Account userAccount = accountRepository.findOneByOwnerIdAndCurrency(user.getUserId(), userToken.getCurrency());
 		if(userAccount == null)
 			throw new UserAccountNotSetup();

@@ -148,7 +148,16 @@ public class AdminControllerTest {
 		HttpEntity<UserToken> entity = new HttpEntity<UserToken>(token, getAuthHeaders());
 		
 		ResponseEntity<String> response = restTemplate.postForEntity(getBaseUrl() + "admin/user/authToken", entity, String.class);
+		//Bad request as the merchant is not enabled for charge
+		assertThat( response.getStatusCode() , equalTo(HttpStatus.BAD_REQUEST));
+		
+		merchant.setChargesEnabled(true);
+		merchant = merchantRepository.save(merchant);
+		
+		response = restTemplate.postForEntity(getBaseUrl() + "admin/user/authToken", entity, String.class);
 		assertThat( response.getStatusCode() , equalTo(HttpStatus.OK));
+		
+		
 		ObjectMapper mapper = new ObjectMapper();
 		UserTokenResponse acct =mapper.readValue(response.getBody(), UserTokenResponse.class);
 		assertThat(acct.getToken(), notNullValue());
@@ -159,7 +168,16 @@ public class AdminControllerTest {
 		HttpEntity<UserToken> entity = new HttpEntity<UserToken>(token, getAuthHeaders());
 		
 		ResponseEntity<UserTokenResponse> response = restTemplate.postForEntity(getBaseUrl() + "admin/user/authToken", entity, UserTokenResponse.class);
-		assertThat( response.getStatusCode() , equalTo(HttpStatus.OK));
+		if(merchant.isChargesEnabled())
+			assertThat( response.getStatusCode() , equalTo(HttpStatus.OK));
+		else
+		{
+			assertThat( response.getStatusCode() , equalTo(HttpStatus.BAD_REQUEST));
+			merchant.setChargesEnabled(true);
+			merchant = merchantRepository.save(merchant);
+			response = restTemplate.postForEntity(getBaseUrl() + "admin/user/authToken", entity, UserTokenResponse.class);
+			assertThat( response.getStatusCode() , equalTo(HttpStatus.OK));
+		}
 		return response.getBody().getToken();
 	}
 	
@@ -183,9 +201,6 @@ public class AdminControllerTest {
 		ResponseEntity<String> response = restTemplate.postForEntity(getBaseUrl() + "/admin/charge", entity, String.class);
 		assertThat( response.getStatusCode() , equalTo(HttpStatus.OK));
 	}
-	
-	
-	
 	
 
 	public AdminService getAdminService() {

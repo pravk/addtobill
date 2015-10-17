@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.data.annotation.Id;
 
-public class User {
+public class User extends BaseEntity{
 
 	public static final String ROLE_MERCHANT = "ROLE_MERCHANT";
 	public static final String ROLE_USER = "ROLE_USER";

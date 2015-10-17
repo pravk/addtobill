@@ -1,6 +1,6 @@
 package com.mantralabsglobal.addtobill.model;
 
-public class Address {
+public class Address extends BaseEntity{
 
 	private String city;
 	private String  street;

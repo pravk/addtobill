@@ -2,7 +2,7 @@ package com.mantralabsglobal.addtobill.model;
 
 import org.springframework.data.annotation.Id;
 
-public class Transaction {
+public class Transaction extends BaseEntity{
 
 	public static final String DEBIT = "D";
 	public static final String CREDIT = "C";

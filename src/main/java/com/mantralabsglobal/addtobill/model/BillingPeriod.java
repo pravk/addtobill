@@ -2,7 +2,7 @@ package com.mantralabsglobal.addtobill.model;
 
 import org.springframework.data.annotation.Id;
 
-public class BillingPeriod {
+public class BillingPeriod extends BaseEntity {
 
 	public static final String BILLING_PERIOD_STATUS_CLOSED="C";
 	public static final String BILLING_PERIOD_STATUS_OPEN="O";

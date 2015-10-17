@@ -2,7 +2,7 @@ package com.mantralabsglobal.addtobill.model;
 
 import org.springframework.data.annotation.Id;
 
-public class BankAccount {
+public class BankAccount extends BaseEntity{
 
 	@Id
 	private String bankAccountId;

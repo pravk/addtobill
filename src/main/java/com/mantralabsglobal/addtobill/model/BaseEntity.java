@@ -1,5 +1,7 @@
 package com.mantralabsglobal.addtobill.model;
 
+import java.util.Date;
+
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -7,11 +9,11 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 public class BaseEntity{
 
-	public String getCreationTS() {
+	public Date getCreationTS() {
 		return creationTS;
 	}
 
-	public void setCreationTS(String creationTS) {
+	public void setCreationTS(Date creationTS) {
 		this.creationTS = creationTS;
 	}
 
@@ -23,11 +25,11 @@ public class BaseEntity{
 		this.createdBy = createdBy;
 	}
 
-	public String getUpdateTS() {
+	public Date getUpdateTS() {
 		return updateTS;
 	}
 
-	public void setUpdateTS(String updateTS) {
+	public void setUpdateTS(Date updateTS) {
 		this.updateTS = updateTS;
 	}
 
@@ -40,11 +42,11 @@ public class BaseEntity{
 	}
 
 	@CreatedDate
-	private String creationTS;
+	private Date creationTS;
 	@CreatedBy
 	private String createdBy;
 	@LastModifiedDate
-	private String updateTS;
+	private Date updateTS;
 	@LastModifiedBy
 	private String updatedBy;
 		

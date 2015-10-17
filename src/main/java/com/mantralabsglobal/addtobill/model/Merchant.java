@@ -6,7 +6,7 @@ import org.springframework.data.annotation.Id;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class Merchant {
+public class Merchant extends BaseEntity{
 
 	@Id
 	private String merchantId;
@@ -58,7 +58,7 @@ public class Merchant {
 	public void setBusiessUrl(String busiessUrl) {
 		this.busiessUrl = busiessUrl;
 	}
-	public boolean getChargesEnabled() {
+	public boolean isChargesEnabled() {
 		return chargesEnabled;
 	}
 	public void setChargesEnabled(boolean chargesEnabled) {
