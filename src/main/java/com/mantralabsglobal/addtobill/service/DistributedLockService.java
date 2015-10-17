@@ -7,6 +7,8 @@ import java.sql.Statement;
 
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class DistributedLockService extends BaseService{
 
+	private static final Logger logger = LoggerFactory.getLogger(DistributedLockService.class);
 
 	@Autowired
 	@Qualifier("lockDS")
@@ -22,7 +25,7 @@ public class DistributedLockService extends BaseService{
 	private static final String LOCK_SQL = "SELECT get_lock('%s', 60)";
 	private static final String RELEASE_LOCK_SQL = "SELECT release_lock('%s')";
 	
-	ThreadLocal<Connection> connection = new ThreadLocal<>();
+	private ThreadLocal<Connection> connection = new ThreadLocal<>();
 	
 	public boolean acquireLock(String userId)
 	{
@@ -36,8 +39,7 @@ public class DistributedLockService extends BaseService{
 				 result = rs.getInt(1);
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Failed to acquire lock", e);
 		}
 		return result ==1;
 	}
@@ -54,16 +56,14 @@ public class DistributedLockService extends BaseService{
 				 result = rs.getInt(1);
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Failed to release lock", e);
 		}
 		finally
 		{
 			try {
 				conn.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error("Failed to release lock", e);
 			}
 		}
 		return result ==1;
