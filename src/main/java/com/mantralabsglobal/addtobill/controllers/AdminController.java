@@ -94,6 +94,11 @@ public class AdminController {
 		return adminService.createMerchant(merchant);
 	}
 	
+	@RequestMapping(value="admin/merchant",method=RequestMethod.PUT)
+	public Merchant updateMerchant(@RequestBody Merchant merchant) throws MerchantExistsException, AccountExistsException, MerchantDoesNotExistException{
+		return adminService.updateMerchant(merchant);
+	}
+	
 	@RequestMapping(value="admin/merchant/account",method=RequestMethod.POST)
 	public Account createMerchant(@RequestBody MerchantAccountRequest merchantAccountRequest) throws MerchantExistsException, AccountExistsException, MerchantDoesNotExistException{
 		return adminService.createMerchantAccount(merchantAccountRequest.getMerchantId(), merchantAccountRequest.getCurrency());

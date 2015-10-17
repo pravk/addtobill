@@ -3,6 +3,7 @@ package com.mantralabsglobal.addtobill.service;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -170,5 +171,35 @@ public class AdminService extends BaseService{
 		createMerchantAccount(merchant.getMerchantId(), merchant.getDefaultCurrency());
 		
 		return merchant;
+	}
+
+	public Merchant updateMerchant(Merchant merchant) {
+		Assert.notNull(merchant);
+		Merchant m = merchantRepository.findOne(merchant.getMerchantId());
+		Assert.notNull(m, "Merchant does not exist");
+		
+		if(StringUtils.isNotEmpty(merchant.getBusinessPrimaryColor()))
+			m.setBusinessPrimaryColor(merchant.getBusinessPrimaryColor());
+		if(StringUtils.isNotEmpty(merchant.getBusinessUrl()))
+			m.setBusinessUrl(merchant.getBusinessUrl());
+		if(StringUtils.isNotEmpty(merchant.getDefaultCurrency()))
+			m.setDefaultCurrency(merchant.getDefaultCurrency());
+		if(StringUtils.isNotEmpty(merchant.getDisplayName()))
+			m.setDisplayName(merchant.getDisplayName());
+		if(StringUtils.isNotEmpty(merchant.getEmail()))
+			m.setEmail(merchant.getEmail());
+		if(StringUtils.isNotEmpty(merchant.getMerchantName()))
+			m.setMerchantName(merchant.getMerchantName());
+		if(StringUtils.isNotEmpty(merchant.getSecretKey()))
+			m.setSecretKey(merchant.getSecretKey());
+		if(StringUtils.isNotEmpty(merchant.getSupportEmail()))
+			m.setSupportEmail(merchant.getSupportEmail());
+		if(StringUtils.isNotEmpty(merchant.getSupportPhone()))
+			m.setSupportPhone(merchant.getSupportPhone());
+		if(StringUtils.isNotEmpty(merchant.getSupportUrl()))
+			m.setSupportUrl(merchant.getSupportUrl());
+		
+		m = merchantRepository.save(m);
+		return m;
 	}
 }

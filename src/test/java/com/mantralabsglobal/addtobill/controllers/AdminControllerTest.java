@@ -36,7 +36,6 @@ import com.mantralabsglobal.addtobill.model.Merchant;
 import com.mantralabsglobal.addtobill.model.User;
 import com.mantralabsglobal.addtobill.repository.MerchantRepository;
 import com.mantralabsglobal.addtobill.repository.UserRepository;
-import com.mantralabsglobal.addtobill.requestModel.MerchantAccountRequest;
 import com.mantralabsglobal.addtobill.requestModel.NewChargeRequest;
 import com.mantralabsglobal.addtobill.requestModel.UserAccountRequest;
 import com.mantralabsglobal.addtobill.requestModel.UserToken;
@@ -62,10 +61,7 @@ public class AdminControllerTest {
 	 @Value("${local.server.port}")  
 	 int port;
 	 
-	private Merchant merchant;
-	private User user;
-	
-	 private String getBaseUrl() {
+	private String getBaseUrl() {
 		return "http://localhost:" + port;
 	 }
 	private RestTemplate restTemplate = new TestRestTemplate();
@@ -73,7 +69,7 @@ public class AdminControllerTest {
 	 
 	@Before
     public void setUp() throws JsonParseException, JsonMappingException, IOException {
-    	merchant = new Merchant();
+    	/*merchant = new Merchant();
 		merchant.setChargesEnabled(false);
 		merchant.setDefaultCurrency("inr");
 		merchant.setDisplayName(ObjectId.get().toString() + " Merchant");
@@ -93,7 +89,7 @@ public class AdminControllerTest {
 		user.setRoles(Arrays.asList(User.ROLE_USER));
 		
 		user = userRepository.save(user);
-		createUserAccount();
+		createUserAccount();*/
         
     }
 	
@@ -108,23 +104,41 @@ public class AdminControllerTest {
 	}
 	
 	
-	public void createMerchantAccount() throws JsonParseException, JsonMappingException, IOException{
+	public Merchant createMerchantAccount(boolean chargesEnabled, boolean transfersEnabled) throws JsonParseException, JsonMappingException, IOException{
+		String id = ObjectId.get().toString() ;
+		Merchant merchant = new Merchant();
+		merchant.setChargesEnabled(chargesEnabled);
+		merchant.setDefaultCurrency("inr");
+		merchant.setDisplayName(id + " Merchant");
+		merchant.setEmail("support@"+id+".com");
+		merchant.setSupportEmail(merchant.getEmail());
+		merchant.setSupportPhone("9999999999");
+		merchant.setBusinessUrl("http://www."+ id +".com");
+		merchant.setMerchantName(merchant.getDisplayName());
+		merchant.setSecretKey(ObjectId.get().toString());
+		merchant.setTransfersEnabled(transfersEnabled);
 		
-		
-		MerchantAccountRequest merchantAccountRequest = new MerchantAccountRequest();
-		merchantAccountRequest.setCurrency("inr");
-		merchantAccountRequest.setMerchantId(merchant.getMerchantId());
-		HttpEntity<MerchantAccountRequest> entity = new HttpEntity<MerchantAccountRequest>(merchantAccountRequest, getAuthHeaders());
+		HttpEntity<Merchant> entity = new HttpEntity<Merchant>(merchant, getAuthHeaders());
 		
 		ResponseEntity<String> response = restTemplate.postForEntity(getBaseUrl() + "/admin/merchant", entity, String.class);
 		assertThat( response.getStatusCode() , equalTo(HttpStatus.OK));
 		ObjectMapper mapper = new ObjectMapper();
-		CreditAccount acct =mapper.readValue(response.getBody(), CreditAccount.class);
-		assertThat(acct.getAccountId(), notNullValue());
+		merchant = mapper.readValue(response.getBody(), Merchant.class);
+		assertThat(merchant.getMerchantId(), notNullValue());
+		return merchant;
 	}
 	
 	
-	public void createUserAccount() throws JsonParseException, JsonMappingException, IOException{
+	public User createUserAccount() throws JsonParseException, JsonMappingException, IOException{
+		
+		User user = new User();
+		user.setEmail(ObjectId.get().toString() + "@atob.com");
+		user.setEmailVerified(true);
+		user.setPassword("secret");
+		user.setRoles(Arrays.asList(User.ROLE_USER));
+		
+		user = userRepository.save(user);
+		
 		UserAccountRequest userAccountRequest = new UserAccountRequest();
 		userAccountRequest.setCurrency("inr");
 		userAccountRequest.setUserId(user.getUserId());
@@ -135,10 +149,15 @@ public class AdminControllerTest {
 		ObjectMapper mapper = new ObjectMapper();
 		DebitAccount acct =mapper.readValue(response.getBody(), DebitAccount.class);
 		assertThat(acct.getAccountId(), notNullValue());
+		return user;
 	}
 	
 	@Test
 	public void generateToken() throws JsonParseException, JsonMappingException, IOException{
+		
+		Merchant merchant = createMerchantAccount(false, false);
+		User user = createUserAccount();
+		
 		UserToken token = new UserToken();
 		token.setAmount(200);
 		token.setCurrency("inr");
@@ -163,7 +182,7 @@ public class AdminControllerTest {
 		assertThat(acct.getToken(), notNullValue());
 	}
 	
-	public String generateToken(UserToken token) {
+	public String generateToken(UserToken token, Merchant merchant, User user) {
 		
 		HttpEntity<UserToken> entity = new HttpEntity<UserToken>(token, getAuthHeaders());
 		
@@ -184,12 +203,15 @@ public class AdminControllerTest {
 	@Test
 	public void createChargeRequest() throws JsonParseException, JsonMappingException, IOException{
 		
+		Merchant merchant = createMerchantAccount(true, false);
+		User user = createUserAccount();
+		
 		UserToken token = new UserToken();
 		token.setAmount(200);
 		token.setCurrency("inr");
 		token.setMerchantId(merchant.getMerchantId());
 		token.setUserId(user.getUserId());
-		String tkn = generateToken(token);
+		String tkn = generateToken(token, merchant, user);
 		NewChargeRequest chargeRequest = new NewChargeRequest();
 		chargeRequest.setAmount(200);
 		chargeRequest.setCurrency("inr");
