@@ -51,6 +51,7 @@ public class NewChargeProcessor extends ChargeProcessor<NewChargeRequest>{
 				.setStatementDescription(chargeRequest.getStatementDescription())
 				.setChargeDate(chargeRequest.getChargeDate())
 				.setStatus(Charge.CHARGE_STATUS_RECORDED)
+				.setMerchantReferenceId(chargeRequest.getMerchantReferenceId())
 				.setApplicationFees(0)
 				.build();
 	}

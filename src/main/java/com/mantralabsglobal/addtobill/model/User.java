@@ -3,6 +3,7 @@ package com.mantralabsglobal.addtobill.model;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 public class User extends BaseEntity{
 
@@ -15,8 +16,10 @@ public class User extends BaseEntity{
 	private String password;
 	private List<String> roles;
 	private String billingAddressId;
+	@Indexed(unique = true)
 	private String email;
 	private boolean emailVerified;
+	@Indexed(unique = true)
 	private String phoneNumber;
 	private boolean phoneVerified;
 	

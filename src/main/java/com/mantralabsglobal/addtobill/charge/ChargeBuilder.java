@@ -17,13 +17,13 @@ public class ChargeBuilder {
 	public static ChargeBuilder newCharge(){
 		Charge charge= new Charge();
 		charge.setChargeType(Charge.CHARGE_TYPE_CHARGE);
-		charge.setChargeDate(new Date().getTime());
+		charge.setChargeDate(new Date());
 		return new ChargeBuilder(charge);
 	}
 	
 	public static ChargeBuilder newRefundCharge(Charge originalCharge){
 		Charge charge= new Charge();
-		charge.setChargeDate(new Date().getTime());
+		charge.setChargeDate(new Date());
 		charge.setChargeType(Charge.CHARGE_TYPE_REFUND);
 		charge.setLinkedChargeId(originalCharge.getChargeId());
 		charge.setAmount(originalCharge.getAmount());
@@ -67,8 +67,13 @@ public class ChargeBuilder {
 	}
 	
 	
-	public ChargeBuilder setChargeDate(long timeStamp){
+	public ChargeBuilder setChargeDate(Date timeStamp){
 		charge.setChargeDate(timeStamp);
+		return this;
+	}
+	
+	public ChargeBuilder setMerchantReferenceId(String merchantReferenceId){
+		charge.setMerchantReferenceId(merchantReferenceId);
 		return this;
 	}
 	

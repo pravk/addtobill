@@ -1,5 +1,7 @@
 package com.mantralabsglobal.addtobill.requestModel;
 
+import java.util.Date;
+
 import org.springframework.data.annotation.Id;
 
 public class NewChargeRequest extends ChargeRequest{
@@ -13,7 +15,7 @@ public class NewChargeRequest extends ChargeRequest{
 	private String currency;
 	private String description;
 	private String statementDescription;
-	private long chargeDate;
+	private Date chargeDate;
 	
 	public String getUserId() {
 		return userId;
@@ -57,10 +59,10 @@ public class NewChargeRequest extends ChargeRequest{
 	public void setStatementDescription(String statementDescription) {
 		this.statementDescription = statementDescription;
 	}
-	public long getChargeDate() {
+	public Date getChargeDate() {
 		return chargeDate;
 	}
-	public void setChargeDate(long chargeDate) {
+	public void setChargeDate(Date chargeDate) {
 		this.chargeDate = chargeDate;
 	}
 

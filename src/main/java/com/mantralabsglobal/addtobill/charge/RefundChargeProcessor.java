@@ -46,6 +46,7 @@ public class RefundChargeProcessor extends ChargeProcessor<CancelChargeRequest> 
 		return ChargeBuilder.newRefundCharge(charge)
 			.setDescription(request.getDescription())
 			.setStatementDescription(request.getStatementDescription())
+			.setMerchantReferenceId(request.getMerchantReferenceId())
 			.build();
 	}
 

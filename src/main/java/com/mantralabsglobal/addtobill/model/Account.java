@@ -1,10 +1,15 @@
 package com.mantralabsglobal.addtobill.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mantralabsglobal.addtobill.exception.InsufficientBalanceException;
 
+@CompoundIndexes({
+    @CompoundIndex(name = "owner_idx", def = "{'ownerId': 1, 'currency': 1}")
+})
 public abstract class Account extends BaseEntity {
 
 	@Id
@@ -12,7 +17,6 @@ public abstract class Account extends BaseEntity {
 	private String currency;
 	private String ownerId;	
 	private String accountType;
-
 	private double upperLimit;
 	private double lowerLimit;
 	

@@ -1,5 +1,6 @@
 package com.mantralabsglobal.addtobill.model;
 
+import java.util.Date;
 import java.util.Map;
 
 import org.springframework.data.annotation.Id;
@@ -15,7 +16,7 @@ public class Charge extends BaseEntity {
 	
 	@Id
 	private String chargeId;
-	private long chargeDate;
+	private Date chargeDate;
 	private double amount;
 	private double applicationFee;
 	private String currency;
@@ -33,6 +34,8 @@ public class Charge extends BaseEntity {
 	private String status;
 	private String chargeType;
 	private String linkedChargeId;
+	private String merchantReferenceId;
+	
 	
 	public String getChargeId() {
 		return chargeId;
@@ -144,11 +147,17 @@ public class Charge extends BaseEntity {
 	public String getMerchantId() {
 		return this.merchantId ;
 	}
-	public long getChargeDate() {
+	public Date getChargeDate() {
 		return chargeDate;
 	}
-	public void setChargeDate(long chargeDate) {
+	public void setChargeDate(Date chargeDate) {
 		this.chargeDate = chargeDate;
+	}
+	public String getMerchantReferenceId() {
+		return merchantReferenceId;
+	}
+	public void setMerchantReferenceId(String merchantReferenceId) {
+		this.merchantReferenceId = merchantReferenceId;
 	}
 	
 }
