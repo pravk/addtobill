@@ -5,6 +5,8 @@ import java.util.Calendar;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Component;
 
 import com.google.common.eventbus.AllowConcurrentEvents;
@@ -21,7 +23,7 @@ import com.mantralabsglobal.addtobill.repository.UserRepository;
 
 @Component
 public class BillingPeriodService {
-
+	
 	@PostConstruct
 	public void inti(){
 		getApplication().registerForTransactionBus(this);
@@ -53,13 +55,17 @@ public class BillingPeriodService {
 			BillingPeriod billingPeriod =billingPeriodRepository.findOneByAccountIdAndEndDate(account.getAccountId(), null);
 			if(billingPeriod == null)
 			{
+				BillingPeriod lastPeriod = billingPeriodRepository.findOneByAccountId(account.getAccountId(), new Sort(Direction.DESC, "endDate"));
+				
 				billingPeriod = new BillingPeriod();
 				billingPeriod.setAccountId(account.getAccountId());
 				billingPeriod.setStartDate(Calendar.getInstance().getTime());
+				billingPeriod.setOpeningBalance(lastPeriod== null?0:lastPeriod.getClosingBalance());
 				billingPeriod = billingPeriodRepository.save(billingPeriod);
 			}
 			transaction.putAttribute("billingPeriod", billingPeriod.getBillingPeriodId());
 			transactionRepository.save(transaction);
+			
 		}
 	}
 
