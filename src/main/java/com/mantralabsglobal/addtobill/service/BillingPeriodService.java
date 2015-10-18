@@ -1,9 +1,11 @@
 package com.mantralabsglobal.addtobill.service;
 
 import java.util.Calendar;
+import java.util.Date;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -52,14 +54,19 @@ public class BillingPeriodService {
 		User user = userRepository.findOne(account.getOwnerId());
 		if(user != null)
 		{
-			BillingPeriod billingPeriod =billingPeriodRepository.findOneByAccountIdAndEndDate(account.getAccountId(), null);
+			Date billPeriodStart = DateUtils.truncate(new Date(), Calendar.DATE);
+			Date billPeriodEnd = DateUtils.ceiling(new Date(), Calendar.DATE);
+			
+			
+			BillingPeriod billingPeriod =billingPeriodRepository.findOneByDateAndAccount( billPeriodStart , account.getAccountId());
 			if(billingPeriod == null)
 			{
-				BillingPeriod lastPeriod = billingPeriodRepository.findOneByAccountId(account.getAccountId(), new Sort(Direction.DESC, "endDate"));
+				BillingPeriod lastPeriod = billingPeriodRepository.findOneClosedByAccountId(account.getAccountId(), new Sort(Direction.DESC, "endDate"));
 				
 				billingPeriod = new BillingPeriod();
 				billingPeriod.setAccountId(account.getAccountId());
 				billingPeriod.setStartDate(Calendar.getInstance().getTime());
+				billingPeriod.setEndDate(billPeriodEnd);
 				billingPeriod.setOpeningBalance(lastPeriod== null?0:lastPeriod.getClosingBalance());
 				billingPeriod = billingPeriodRepository.save(billingPeriod);
 			}

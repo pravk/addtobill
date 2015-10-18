@@ -12,7 +12,8 @@ public class BillingPeriod extends BaseEntity {
 	private Date endDate;
 	private String accountId;
 	private double openingBalance;
-	
+	private String status;
+	private String failureMessage;
 	
 	public String getBillingPeriodId() {
 		return billingPeriodId;
@@ -65,6 +66,22 @@ public class BillingPeriod extends BaseEntity {
 	private double closingBalance;
 	
 	public boolean isOpen() {
-		return endDate == null;
+		return "O".equals(getStatus());
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public void setFailureMessage(String message) {
+		this.failureMessage = message;
+	}
+	
+	public String getFailureMessage(){
+		return this.failureMessage;
 	}
 }

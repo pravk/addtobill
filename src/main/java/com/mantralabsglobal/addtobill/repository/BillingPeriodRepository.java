@@ -10,9 +10,14 @@ import com.mantralabsglobal.addtobill.model.BillingPeriod;
 
 public interface BillingPeriodRepository extends CrudRepository<BillingPeriod, String> {
 
-	BillingPeriod findOneByAccountIdAndEndDate(String accountId, Date endDate);
+	//@Query("{ 'endDate' : {'$gt' : ?0, '$lt' : ?1}}")
+	Iterable<BillingPeriod> findAllByEndDateBetween(Date startOfDay, Date endOfDay);
 
-	@Query("{'accountId': ?0 }")
-	BillingPeriod findOneByAccountId(String accountId, Sort sort);
+
+	@Query("{ 'startDate' : {'$lt' : ?0}, 'endDate' : {'$gt' : ?0}, 'accountId': ?1 }")
+	BillingPeriod findOneByDateAndAccount(Date date, String acountId);
+	
+	@Query("{'accountId': ?0 , 'status' : 'C' }")
+	BillingPeriod findOneClosedByAccountId(String accountId, Sort sort);
 
 }
