@@ -1,5 +1,8 @@
 package com.mantralabsglobal.addtobill.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.data.annotation.Id;
 
 public class Transaction extends BaseEntity{
@@ -15,6 +18,7 @@ public class Transaction extends BaseEntity{
 	private String transactionAccountId;
 	private String debitCreditIndicator;
 	private String chargeId;
+	private Map<String,String> attributes;
 	
 	public String getTransactionId() {
 		return transactionId;
@@ -73,6 +77,20 @@ public class Transaction extends BaseEntity{
 
 	public void setChargeId(String chargeId) {
 		this.chargeId = chargeId;
+	}
+
+	public Map<String,String> getAttributes() {
+		return attributes;
+	}
+
+	public void setAttributes(Map<String,String> attributes) {
+		this.attributes = attributes;
+	}
+
+	public String putAttribute(String key, String value) {
+		if(getAttributes() == null)
+			attributes = new HashMap<>();
+		return attributes.put(key, value);
 	}
 
 }

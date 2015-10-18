@@ -26,6 +26,7 @@ public class UserAccountService  extends BaseService{
 		account.setAccountBalance(acctBalance);
 		account.setOwnerId(user.getUserId());
 		account.setCurrency(currency);
+		account.setAccountStatus(Account.ACCOUNT_STATUS_ACTIVE);
 		return accountRepository.save(account);
 	}
 

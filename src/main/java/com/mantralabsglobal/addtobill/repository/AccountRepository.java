@@ -12,5 +12,7 @@ public interface AccountRepository extends CrudRepository<Account, String> {
 
 		List<Account> findAllByOwnerId(String userId);
 
+		Iterable<Account> findAllByAccountStatus(String accountStatus);
+
 
 }

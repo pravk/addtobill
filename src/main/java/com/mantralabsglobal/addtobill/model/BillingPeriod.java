@@ -1,12 +1,18 @@
 package com.mantralabsglobal.addtobill.model;
 
+import java.util.Date;
+
 import org.springframework.data.annotation.Id;
 
 public class BillingPeriod extends BaseEntity {
 
-	public static final String BILLING_PERIOD_STATUS_CLOSED="C";
-	public static final String BILLING_PERIOD_STATUS_OPEN="O";
-	public static final String BILLING_PERIOD_STATUS_LOCKED="L";
+	@Id
+	private String billingPeriodId;
+	private Date startDate;
+	private Date endDate;
+	private String accountId;
+	private double openingBalance;
+	
 	
 	public String getBillingPeriodId() {
 		return billingPeriodId;
@@ -16,19 +22,19 @@ public class BillingPeriod extends BaseEntity {
 		this.billingPeriodId = billingPeriodId;
 	}
 
-	public long getStartDate() {
+	public Date getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(long startDate) {
+	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
 	}
 
-	public long getEndDate() {
+	public Date getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(long endDate) {
+	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
 
@@ -40,22 +46,6 @@ public class BillingPeriod extends BaseEntity {
 		this.accountId = accountId;
 	}
 
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	@Id
-	private String billingPeriodId;
-	private long startDate;
-	private long endDate;
-	private String accountId;
-	private String status;
-	private double openingBalance;
-	
 	public double getOpeningBalance() {
 		return openingBalance;
 	}
@@ -75,6 +65,6 @@ public class BillingPeriod extends BaseEntity {
 	private double closingBalance;
 	
 	public boolean isOpen() {
-		return BILLING_PERIOD_STATUS_OPEN.equals(getStatus());
+		return endDate == null;
 	}
 }

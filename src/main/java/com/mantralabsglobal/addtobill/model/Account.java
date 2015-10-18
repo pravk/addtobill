@@ -12,6 +12,10 @@ import com.mantralabsglobal.addtobill.exception.InsufficientBalanceException;
 })
 public abstract class Account extends BaseEntity {
 
+	public static final String ACCOUNT_STATUS_ACTIVE = "Active";
+	public static final String ACCOUNT_STATUS_CLOSED = "Closed";
+	public static final String ACCOUNT_STATUS_LOCKED = "Locked";
+	
 	@Id
 	private String accountId;
 	private String currency;
@@ -19,6 +23,7 @@ public abstract class Account extends BaseEntity {
 	private String accountType;
 	private double upperLimit;
 	private double lowerLimit;
+	private String accountStatus;
 	
 	private AccountBalance accountBalance;
 	
@@ -88,6 +93,14 @@ public abstract class Account extends BaseEntity {
 
 	public void setAccountType(String accountType) {
 		this.accountType = accountType;
+	}
+
+	public String getAccountStatus() {
+		return accountStatus;
+	}
+
+	public void setAccountStatus(String accountStatus) {
+		this.accountStatus = accountStatus;
 	}
 
 

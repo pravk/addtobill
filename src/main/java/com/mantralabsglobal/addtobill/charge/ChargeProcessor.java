@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.mantralabsglobal.addtobill.Application;
 import com.mantralabsglobal.addtobill.exception.ChargeFailedException;
 import com.mantralabsglobal.addtobill.exception.InsufficientBalanceException;
 import com.mantralabsglobal.addtobill.model.Account;
@@ -31,6 +32,9 @@ public abstract class ChargeProcessor<T extends ChargeRequest> {
 	@Autowired
 	protected DistributedLockService lockService;
 	
+	@Autowired
+	protected Application application;
+	
 	
 	@Autowired
 	protected ChargeRepository chargeRepository;
@@ -51,13 +55,18 @@ public abstract class ChargeProcessor<T extends ChargeRequest> {
 					
 					updateAccountBalance(transactionMap);
 					
-					transactionRepository.save(transactionMap.values());
+					Iterator<Transaction> transIterator = transactionRepository.save(transactionMap.values()).iterator();
 					
 					accountRepository.save(transactionMap.keySet());
 					
 					charge.setStatus(Charge.CHARGE_STATUS_SUCCESS);
 					
 					charge = chargeRepository.save(charge);
+					
+					while(transIterator.hasNext()){
+						application.postTransaction(transIterator.next());
+					}
+					
 				}
 				catch(Exception exp)
 				{
@@ -86,10 +95,12 @@ public abstract class ChargeProcessor<T extends ChargeRequest> {
 		Iterator<Account> iterator = transactionMap.keySet().iterator();
 		while(iterator.hasNext()){
 			Account account = iterator.next();
-			Transaction transaction = transactionMap.get(account);
-			AccountBalance acctBalance = account.getAccountBalance();
-			account.applyTransaction(transaction);
-			acctBalance.setBalanceUpdateDate(new Date().getTime());
+			if(account.isDebitAccount()){
+				Transaction transaction = transactionMap.get(account);
+				AccountBalance acctBalance = account.getAccountBalance();
+				account.applyTransaction(transaction);
+				acctBalance.setBalanceUpdateDate(new Date().getTime());
+			}
 		}
 	}
 
