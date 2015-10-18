@@ -19,7 +19,6 @@ import com.mantralabsglobal.addtobill.exception.UserExistsException;
 import com.mantralabsglobal.addtobill.requestModel.CancelChargeRequest;
 import com.mantralabsglobal.addtobill.requestModel.MerchantAccountRequest;
 import com.mantralabsglobal.addtobill.requestModel.NewChargeRequest;
-import com.mantralabsglobal.addtobill.requestModel.UserAccountRequest;
 import com.mantralabsglobal.addtobill.requestModel.UserToken;
 import com.mantralabsglobal.addtobill.responseModel.UserTokenResponse;
 import com.mantralabsglobal.addtobill.model.Account;
@@ -63,12 +62,6 @@ public class AdminController {
 	@RequestMapping(value="admin/user/authToken", method=RequestMethod.POST)
 	public UserTokenResponse generateUserAuthToken(@RequestBody UserToken userToken) throws Exception{
 		return adminService.generateUserAuthToken(userToken);
-	}
-	
-	@RequestMapping(value="admin/user", method=RequestMethod.POST)
-	public Account createUser(@RequestBody UserAccountRequest user) throws UserExistsException, InvalidRequestException{
-		
-		return adminService.createUserAccount(user.getUserId(), user.getCurrency());
 	}
 	
 	@RequestMapping(value="admin/user", method=RequestMethod.PUT)

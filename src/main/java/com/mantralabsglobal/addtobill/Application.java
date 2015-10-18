@@ -6,6 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.google.common.eventbus.EventBus;
 import com.mantralabsglobal.addtobill.model.User;
@@ -20,13 +21,14 @@ public class Application {
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(Application.class, args);
         UserRepository respository = context.getBean(UserRepository.class);
+        PasswordEncoder passwordEncoder = context.getBean(PasswordEncoder.class);
         User user = respository.findOneByEmail("admin");
         if(user == null)
         {
         	//Create admin user
         	user = new User();
         	user.setEmail("admin");
-        	user.setPassword("admin");
+        	user.setPassword(passwordEncoder.encode("admin"));
         	user.setRoles( Arrays.asList("ROLE_ADMIN"));
         	respository.save(user);
         }

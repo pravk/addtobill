@@ -15,7 +15,6 @@ import com.mantralabsglobal.addtobill.exception.InsufficientBalanceException;
 import com.mantralabsglobal.addtobill.exception.InvalidRequestException;
 import com.mantralabsglobal.addtobill.exception.MerchantDoesNotExistException;
 import com.mantralabsglobal.addtobill.exception.UserAccountNotSetup;
-import com.mantralabsglobal.addtobill.exception.UserExistsException;
 import com.mantralabsglobal.addtobill.model.Account;
 import com.mantralabsglobal.addtobill.model.AccountBalance;
 import com.mantralabsglobal.addtobill.model.CreditAccount;
@@ -31,8 +30,6 @@ public class AdminService extends BaseService{
 
 	@Autowired
 	private UserRepository userRepository;
-	@Autowired
-	private UserAccountService accountService;
 	
 	public User getUserByEmail(String email) {
 		return userRepository.findOneByEmail(email);
@@ -45,21 +42,6 @@ public class AdminService extends BaseService{
 
 	public List<Account> getUserAccounts(String userId) {
 		return accountRepository.findAllByOwnerId(userId);
-	}
-	
-	public Account createUserAccount(String  userId, String currency ) throws UserExistsException, InvalidRequestException {
-		Assert.notNull(userId);
-		User savedUser = userRepository.findOne(userId);
-		if(savedUser== null)
-		{
-			throw new InvalidRequestException("Invalid user Id");
-		}
-		else if(accountService.accountExists(savedUser, currency)){
-			throw new InvalidRequestException("Account already exists ");
-		}
-		else{
-			return accountService.createAccount(savedUser, currency);
-		}
 	}
 	
 	public Account createMerchantAccount(String merchantId, String currency) throws AccountExistsException, MerchantDoesNotExistException {

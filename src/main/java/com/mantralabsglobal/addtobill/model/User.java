@@ -22,6 +22,7 @@ public class User extends BaseEntity{
 	@Indexed(unique = true)
 	private String phoneNumber;
 	private boolean phoneVerified;
+	private String defaultCurrency;
 	
 	public String getUserId() {
 		return userId;
@@ -71,6 +72,12 @@ public class User extends BaseEntity{
 	}
 	public void setPhoneVerified(boolean phoneVerified) {
 		this.phoneVerified = phoneVerified;
+	}
+	public String getDefaultCurrency() {
+		return defaultCurrency;
+	}
+	public void setDefaultCurrency(String defaultCurrency) {
+		this.defaultCurrency = defaultCurrency;
 	}
 	
 }

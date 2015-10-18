@@ -30,14 +30,10 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mantralabsglobal.addtobill.Application;
-import com.mantralabsglobal.addtobill.model.CreditAccount;
-import com.mantralabsglobal.addtobill.model.DebitAccount;
 import com.mantralabsglobal.addtobill.model.Merchant;
 import com.mantralabsglobal.addtobill.model.User;
 import com.mantralabsglobal.addtobill.repository.MerchantRepository;
-import com.mantralabsglobal.addtobill.repository.UserRepository;
 import com.mantralabsglobal.addtobill.requestModel.NewChargeRequest;
-import com.mantralabsglobal.addtobill.requestModel.UserAccountRequest;
 import com.mantralabsglobal.addtobill.requestModel.UserToken;
 import com.mantralabsglobal.addtobill.responseModel.UserTokenResponse;
 import com.mantralabsglobal.addtobill.service.AdminService;
@@ -54,8 +50,6 @@ public class AdminControllerTest {
 	@Autowired
 	private MerchantRepository merchantRepository;
 	
-	@Autowired
-	private UserRepository userRepository;
 	
 	
 	 @Value("${local.server.port}")  
@@ -136,19 +130,16 @@ public class AdminControllerTest {
 		user.setEmailVerified(true);
 		user.setPassword("secret");
 		user.setRoles(Arrays.asList(User.ROLE_USER));
+		user.setDefaultCurrency("inr");
+		user.setPhoneNumber(ObjectId.get().toString());
 		
-		user = userRepository.save(user);
+		HttpEntity<User> entity = new HttpEntity<User>(user);
 		
-		UserAccountRequest userAccountRequest = new UserAccountRequest();
-		userAccountRequest.setCurrency("inr");
-		userAccountRequest.setUserId(user.getUserId());
-		HttpEntity<UserAccountRequest> entity = new HttpEntity<UserAccountRequest>(userAccountRequest, getAuthHeaders());
-		
-		ResponseEntity<String> response = restTemplate.postForEntity(getBaseUrl() + "/admin/user", entity, String.class);
+		ResponseEntity<String> response = restTemplate.postForEntity(getBaseUrl() + "/user/register", entity, String.class);
 		assertThat( response.getStatusCode() , equalTo(HttpStatus.OK));
 		ObjectMapper mapper = new ObjectMapper();
-		DebitAccount acct =mapper.readValue(response.getBody(), DebitAccount.class);
-		assertThat(acct.getAccountId(), notNullValue());
+		user =mapper.readValue(response.getBody(), User.class);
+		assertThat(user.getUserId(), notNullValue());
 		return user;
 	}
 	
