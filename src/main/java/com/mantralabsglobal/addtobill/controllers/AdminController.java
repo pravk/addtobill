@@ -19,8 +19,6 @@ import com.mantralabsglobal.addtobill.exception.UserExistsException;
 import com.mantralabsglobal.addtobill.requestModel.CancelChargeRequest;
 import com.mantralabsglobal.addtobill.requestModel.MerchantAccountRequest;
 import com.mantralabsglobal.addtobill.requestModel.NewChargeRequest;
-import com.mantralabsglobal.addtobill.requestModel.UserToken;
-import com.mantralabsglobal.addtobill.responseModel.UserChargeToken;
 import com.mantralabsglobal.addtobill.model.Account;
 import com.mantralabsglobal.addtobill.model.Charge;
 import com.mantralabsglobal.addtobill.model.Merchant;
@@ -57,11 +55,6 @@ public class AdminController {
 		if(user != null)
 			return user;
 		throw new ResourceNotFoundException(); 
-	}
-	
-	@RequestMapping(value="admin/user/authToken", method=RequestMethod.POST)
-	public UserChargeToken generateUserAuthToken(@RequestBody UserToken userToken) throws Exception{
-		return adminService.generateUserAuthToken(userToken);
 	}
 	
 	@RequestMapping(value="admin/user", method=RequestMethod.PUT)

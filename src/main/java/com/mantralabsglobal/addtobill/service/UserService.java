@@ -2,11 +2,13 @@ package com.mantralabsglobal.addtobill.service;
 
 import java.security.Principal;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.naming.AuthenticationException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,12 +17,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import com.mantralabsglobal.addtobill.auth.TokenHandler;
+import com.mantralabsglobal.addtobill.exception.InsufficientBalanceException;
 import com.mantralabsglobal.addtobill.exception.InvalidRequestException;
+import com.mantralabsglobal.addtobill.exception.UserAccountNotSetup;
 import com.mantralabsglobal.addtobill.exception.UserExistsException;
 import com.mantralabsglobal.addtobill.model.Account;
+import com.mantralabsglobal.addtobill.model.Merchant;
 import com.mantralabsglobal.addtobill.model.User;
 import com.mantralabsglobal.addtobill.requestModel.UserAuthRequest;
+import com.mantralabsglobal.addtobill.requestModel.UserToken;
 import com.mantralabsglobal.addtobill.responseModel.UserAuthToken;
+import com.mantralabsglobal.addtobill.responseModel.UserChargeToken;
 
 @Service
 public class UserService  extends BaseService implements org.springframework.security.core.userdetails.UserDetailsService{
@@ -129,6 +136,41 @@ public class UserService  extends BaseService implements org.springframework.sec
 		{
 			throw new AuthenticationException("Incorrect password");
 		}
+	}
+	
+	public UserChargeToken generateUserAuthToken(UserToken userToken) throws Exception {
+		Assert.notNull(userToken);
+		Assert.hasText(userToken.getCurrency(), "Currency cannot be null");
+		Assert.hasText(userToken.getMerchantId(),"MerchantId cannot be null");
+		Assert.isTrue(userToken.getAmount()>0, "Amount needs to be greater than 0");
+		Assert.isTrue(userToken.getUserId() == null, "UserId cannot be part of body");
+		
+		User user = getLoggedInUser();
+		Merchant merchant = merchantRepository.findOne(userToken.getMerchantId());
+		if(user == null || merchant == null)
+			throw new InvalidRequestException("Invalid userid and/or merchantid");
+		
+		if(!merchant.isChargesEnabled())
+			throw new InvalidRequestException("Charge not enabled for the Merchant");
+		
+		Account userAccount = accountRepository.findOneByOwnerIdAndCurrency(user.getUserId(), userToken.getCurrency());
+		if(userAccount == null)
+			throw new UserAccountNotSetup();
+		
+		double newBalance = userAccount.getAccountBalance().getRunningBalance() + userToken.getAmount();
+		if(newBalance > userAccount.getUpperLimit() || newBalance < userAccount.getLowerLimit())
+			throw new InsufficientBalanceException();
+		
+		UserToken userToken2 = new UserToken();
+		userToken2.setAmount(userToken.getAmount());
+		userToken2.setCurrency(userToken.getCurrency());
+		userToken2.setMerchantId(userToken.getMerchantId());
+		userToken2.setUserId(user.getUserId());
+		userToken2.setExpiry(DateUtils.addMinutes(new Date(), 3).getTime());
+		String token = generateToken(userToken2);
+		UserChargeToken response = new UserChargeToken();
+		response.setToken(token);
+		return response;
 	}
 		
 }

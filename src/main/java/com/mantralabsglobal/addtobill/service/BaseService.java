@@ -1,13 +1,15 @@
 package com.mantralabsglobal.addtobill.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.mantralabsglobal.addtobill.crypto.DesEncryptor;
 import com.mantralabsglobal.addtobill.model.Account;
-import com.mantralabsglobal.addtobill.repository.ChargeRepository;
+import com.mantralabsglobal.addtobill.model.User;
 import com.mantralabsglobal.addtobill.repository.AccountRepository;
+import com.mantralabsglobal.addtobill.repository.ChargeRepository;
 import com.mantralabsglobal.addtobill.repository.MerchantRepository;
 import com.mantralabsglobal.addtobill.repository.TransactionRepository;
 import com.mantralabsglobal.addtobill.repository.UserRepository;
@@ -72,4 +74,8 @@ public abstract class BaseService {
 		return encrypter.encrypt(json);
 	}
 	
+	protected User getLoggedInUser(){
+		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+		return userRepository.findOneByEmail(userName);
+	}
 }

@@ -14,9 +14,10 @@ public class DesEncryptor {
 	
 	private static final String ALGORITHM = "AES";
 	
-	@Value("app.token.secret")
-    private static String keyValue;
+	@Value("${app.charge.token.secret}")
+    private String keyValue;
 
+	private Key key;
     /**
      * @param args
      * @throws Exception
@@ -50,8 +51,9 @@ public class DesEncryptor {
         return new String(decryptedValue);
     }
 
-    private static Key generateKey() throws Exception {
-        Key key = new SecretKeySpec(keyValue.getBytes(), ALGORITHM);
+    private Key generateKey() throws Exception {
+    	if(key == null)
+    		key = new SecretKeySpec(keyValue.getBytes(), ALGORITHM);
         return key;
     }
 }

@@ -4,17 +4,13 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import com.mantralabsglobal.addtobill.exception.AccountExistsException;
-import com.mantralabsglobal.addtobill.exception.InsufficientBalanceException;
-import com.mantralabsglobal.addtobill.exception.InvalidRequestException;
 import com.mantralabsglobal.addtobill.exception.MerchantDoesNotExistException;
-import com.mantralabsglobal.addtobill.exception.UserAccountNotSetup;
 import com.mantralabsglobal.addtobill.model.Account;
 import com.mantralabsglobal.addtobill.model.AccountBalance;
 import com.mantralabsglobal.addtobill.model.CreditAccount;
@@ -22,8 +18,6 @@ import com.mantralabsglobal.addtobill.model.Merchant;
 import com.mantralabsglobal.addtobill.model.User;
 
 import com.mantralabsglobal.addtobill.repository.UserRepository;
-import com.mantralabsglobal.addtobill.requestModel.UserToken;
-import com.mantralabsglobal.addtobill.responseModel.UserChargeToken;
 
 @Service
 public class AdminService extends BaseService{
@@ -91,40 +85,6 @@ public class AdminService extends BaseService{
 		return merchantRepository.findOne(merchantId);
 	}
 
-	public UserChargeToken generateUserAuthToken(UserToken userToken) throws Exception {
-		Assert.notNull(userToken);
-		Assert.hasText(userToken.getCurrency());
-		Assert.hasText(userToken.getMerchantId());
-		Assert.hasText(userToken.getUserId());
-		Assert.isTrue(userToken.getAmount()>0);
-		
-		User user = userRepository.findOne(userToken.getUserId());
-		Merchant merchant = merchantRepository.findOne(userToken.getMerchantId());
-		if(user == null || merchant == null)
-			throw new InvalidRequestException("Invalid userid and/or merchantid");
-		
-		if(!merchant.isChargesEnabled())
-			throw new InvalidRequestException("Charge not enabled for the Merchant");
-		
-		Account userAccount = accountRepository.findOneByOwnerIdAndCurrency(user.getUserId(), userToken.getCurrency());
-		if(userAccount == null)
-			throw new UserAccountNotSetup();
-		
-		double newBalance = userAccount.getAccountBalance().getRunningBalance() + userToken.getAmount();
-		if(newBalance > userAccount.getUpperLimit() || newBalance < userAccount.getLowerLimit())
-			throw new InsufficientBalanceException();
-		
-		UserToken userToken2 = new UserToken();
-		userToken2.setAmount(userToken.getAmount());
-		userToken2.setCurrency(userToken.getCurrency());
-		userToken2.setMerchantId(userToken.getMerchantId());
-		userToken2.setUserId(userToken.getUserId());
-		userToken2.setExpiry(DateUtils.addMinutes(new Date(), 3).getTime());
-		String token = generateToken(userToken2);
-		UserChargeToken response = new UserChargeToken();
-		response.setToken(token);
-		return response;
-	}
 
 	public Merchant createMerchant(Merchant merchant) throws AccountExistsException, MerchantDoesNotExistException {
 		Assert.notNull(merchant);

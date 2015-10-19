@@ -19,7 +19,9 @@ import com.mantralabsglobal.addtobill.model.Account;
 import com.mantralabsglobal.addtobill.model.User;
 import com.mantralabsglobal.addtobill.requestModel.UserAccountRequest;
 import com.mantralabsglobal.addtobill.requestModel.UserAuthRequest;
+import com.mantralabsglobal.addtobill.requestModel.UserToken;
 import com.mantralabsglobal.addtobill.responseModel.UserAuthToken;
+import com.mantralabsglobal.addtobill.responseModel.UserChargeToken;
 import com.mantralabsglobal.addtobill.service.UserAccountService;
 import com.mantralabsglobal.addtobill.service.UserService;
 
@@ -51,6 +53,11 @@ public class UserController extends BaseController {
 	public Account createUser(@RequestBody UserAccountRequest user) throws UserExistsException, InvalidRequestException{
 		
 		return userService.createUserAccount(user.getUserId(), user.getCurrency());
+	}
+	
+	@RequestMapping(value="user/authToken", method=RequestMethod.POST)
+	public UserChargeToken generateUserAuthToken(@RequestBody UserToken userToken) throws Exception{
+		return userService.generateUserAuthToken(userToken);
 	}
 	
 	@RequestMapping(value="/user/accounts", method=RequestMethod.GET)
