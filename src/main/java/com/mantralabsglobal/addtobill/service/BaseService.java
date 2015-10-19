@@ -4,11 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.mantralabsglobal.addtobill.model.UserAccount;
 import com.mantralabsglobal.addtobill.crypto.DesEncryptor;
-import com.mantralabsglobal.addtobill.model.Transaction;
+import com.mantralabsglobal.addtobill.model.Account;
+import com.mantralabsglobal.addtobill.repository.ChargeRepository;
 import com.mantralabsglobal.addtobill.repository.AccountRepository;
-import com.mantralabsglobal.addtobill.repository.MerchantAccountRepository;
 import com.mantralabsglobal.addtobill.repository.MerchantRepository;
 import com.mantralabsglobal.addtobill.repository.TransactionRepository;
 import com.mantralabsglobal.addtobill.repository.UserRepository;
@@ -19,9 +18,11 @@ public abstract class BaseService {
 	@Autowired
 	protected AccountRepository accountRepository;
 	@Autowired
-	protected MerchantAccountRepository merchantAccountRepository;
+	protected AccountRepository merchantAccountRepository;
 	@Autowired
 	protected UserRepository userRepository;
+	@Autowired
+	protected ChargeRepository chargeRepository;
 	@Autowired
 	protected MerchantRepository merchantRepository;
 	@Autowired
@@ -35,7 +36,7 @@ public abstract class BaseService {
 	}
 
 	
-	public UserAccount getAccountDetails(String accountId){
+	public Account getAccountDetails(String accountId){
 		return accountRepository.findOne(accountId);
 	}
 
@@ -53,11 +54,11 @@ public abstract class BaseService {
 		return userRepository.findOneByEmail(email).getUserId();
 	}
 	
-	protected Transaction getUserTransaction(String userId, String transactionId) {
+	/*protected Transaction getUserTransaction(String userId, String transactionId) {
 		Transaction transaction = transactionRepository.findOne(transactionId);
 		UserAccount userAccount = accountRepository.findOneByUserIdAndCurrency(userId, transaction.getCurrency());
 		return userAccount.getAccountId().equals(transaction.getTransactionAccountId())?transaction:null;
-	}
+	}*/
 	
 	protected UserToken resolveToken(String token) throws Exception {
 		String decryptedToken = encrypter.decrypt(token);

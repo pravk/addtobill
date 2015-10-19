@@ -3,19 +3,26 @@ package com.mantralabsglobal.addtobill.model;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 
-public class User {
+public class User extends BaseEntity{
 
 	public static final String ROLE_MERCHANT = "ROLE_MERCHANT";
+	public static final String ROLE_USER = "ROLE_USER";
+	public static final String ROLE_ADMIN = "ROLE_ADMIN";
+	
 	@Id
 	private String userId;
 	private String password;
 	private List<String> roles;
 	private String billingAddressId;
-	private String emailId;
+	@Indexed(unique = true)
+	private String email;
 	private boolean emailVerified;
+	@Indexed(unique = true)
 	private String phoneNumber;
 	private boolean phoneVerified;
+	private String defaultCurrency;
 	
 	public String getUserId() {
 		return userId;
@@ -23,7 +30,7 @@ public class User {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-	private String email;
+	
 	public String getEmail() {
 		return email;
 	}
@@ -48,12 +55,6 @@ public class User {
 	public void setBillingAddressId(String billingAddressId) {
 		this.billingAddressId = billingAddressId;
 	}
-	public String getEmailId() {
-		return emailId;
-	}
-	public void setEmailId(String emailId) {
-		this.emailId = emailId;
-	}
 	public boolean isEmailVerified() {
 		return emailVerified;
 	}
@@ -71,6 +72,12 @@ public class User {
 	}
 	public void setPhoneVerified(boolean phoneVerified) {
 		this.phoneVerified = phoneVerified;
+	}
+	public String getDefaultCurrency() {
+		return defaultCurrency;
+	}
+	public void setDefaultCurrency(String defaultCurrency) {
+		this.defaultCurrency = defaultCurrency;
 	}
 	
 }

@@ -14,4 +14,7 @@ public interface TransactionRepository extends CrudRepository<Transaction, Strin
 
 	Transaction findOneByChargeIdAndTransactionAccountId(String chargeId, String merchantAccountId);
 
+	@Query(value = "{ 'attributes.billingPeriod' : ?0 }")
+	Iterable<Transaction> findByBillingPeriod(String billingPeriodId);
+
 }

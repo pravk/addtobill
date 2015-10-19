@@ -1,6 +1,6 @@
 package com.mantralabsglobal.addtobill.model;
 
-public abstract class TransactionResult {
+public abstract class TransactionResult extends BaseEntity{
 
 	private String status;
 	

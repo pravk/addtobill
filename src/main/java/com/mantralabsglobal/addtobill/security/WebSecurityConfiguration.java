@@ -9,6 +9,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.mantralabsglobal.addtobill.model.Merchant;
 import com.mantralabsglobal.addtobill.model.User;
@@ -22,10 +23,14 @@ class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
   UserRepository userRepository;
   @Autowired
   MerchantRepository merchantRepository;
+  
+  @Autowired
+  PasswordEncoder passwordEncoder;
 
   @Override
   public void init(AuthenticationManagerBuilder auth) throws Exception {
-    auth.userDetailsService(userDetailsService());
+    auth.userDetailsService(userDetailsService())
+    	.passwordEncoder(passwordEncoder);
   }
 
   @Bean

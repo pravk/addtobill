@@ -1,138 +1,121 @@
 package com.mantralabsglobal.addtobill.charge;
 
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.google.common.eventbus.Subscribe;
+import com.mantralabsglobal.addtobill.Application;
+import com.mantralabsglobal.addtobill.exception.ChargeFailedException;
 import com.mantralabsglobal.addtobill.exception.InsufficientBalanceException;
+import com.mantralabsglobal.addtobill.model.Account;
 import com.mantralabsglobal.addtobill.model.AccountBalance;
 import com.mantralabsglobal.addtobill.model.Charge;
-import com.mantralabsglobal.addtobill.model.MerchantAccount;
 import com.mantralabsglobal.addtobill.model.Transaction;
-import com.mantralabsglobal.addtobill.model.UserAccount;
 import com.mantralabsglobal.addtobill.repository.AccountRepository;
 import com.mantralabsglobal.addtobill.repository.ChargeRepository;
-import com.mantralabsglobal.addtobill.repository.MerchantAccountRepository;
 import com.mantralabsglobal.addtobill.repository.TransactionRepository;
+import com.mantralabsglobal.addtobill.requestModel.ChargeRequest;
+import com.mantralabsglobal.addtobill.service.DistributedLockService;
 
 @Component
-public class ChargeProcessor {
+public abstract class ChargeProcessor<T extends ChargeRequest> {
 
 	@Autowired
-	private AccountRepository userAccountRepository;
+	protected AccountRepository accountRepository;
 	
 	@Autowired
-	private MerchantAccountRepository merchantAccountRepository;
-	@Autowired
-	private TransactionRepository transactionRepository;
+	protected TransactionRepository transactionRepository;
 	
 	@Autowired
-	private ChargeRepository chargeRepository;
+	protected DistributedLockService lockService;
 	
-	@Subscribe
-	public void process(Charge charge) throws InsufficientBalanceException{
-		switch(charge.getChargeType()){
-		
-			case Charge.CHARGE_TYPE_CHARGE:
-				processNewCharge(charge);
-				break;
-			case Charge.CHARGE_TYPE_REFUND:
-				processRefund(charge);
-				break;
-		
-		}
-		
-	}
+	@Autowired
+	protected Application application;
 	
-	private void processRefund(Charge charge) {
-		//Get User Account
-		UserAccount userAccount = userAccountRepository.findOneByUserIdAndCurrency(charge.getUserId(), charge.getCurrency());
+	
+	@Autowired
+	protected ChargeRepository chargeRepository;
+	
+	public  Charge processRequest(T request) throws Exception{
 		
-		//Create User Transaction
-		Transaction userTransaction = new Transaction();
-		userTransaction.setAmount(charge.getAmount());
-		userTransaction.setCurrency(charge.getCurrency());
-		userTransaction.setChargeId(charge.getChargeId());
-		userTransaction.setDebitCreditIndicator(Transaction.CREDIT);
-		userTransaction.setTransactionAccountId(userAccount.getAccountId());
-		userTransaction = transactionRepository.save(userTransaction);
-		
-		//Update user account balance
-		userAccount.setRemainingCreditBalance(userAccount.getRemainingCreditBalance()+userTransaction.getAmount());
-		userAccountRepository.save(userAccount);
-		
-		//Get Merchant Account
-		MerchantAccount merchantAccount = merchantAccountRepository.findOne(charge.getMerchantAccountId());
-		
-		Charge originalCharge = chargeRepository.findOne(charge.getLinkedChargeId());
-		Transaction originalMerchantTransaction = transactionRepository.findOneByChargeIdAndTransactionAccountId(originalCharge.getChargeId(), merchantAccount.getMerchantAccountId());
-		
-		//Create Merchant Transaction
-		Transaction merchantTransaction = new Transaction();
-		merchantTransaction.setAmount(originalMerchantTransaction.getAmount());
-		merchantTransaction.setCurrency(charge.getCurrency());
-		merchantTransaction.setChargeId(charge.getChargeId());
-		merchantTransaction.setDebitCreditIndicator(Transaction.DEBIT);
-		merchantTransaction.setTransactionAccountId(merchantAccount.getMerchantAccountId());
-		merchantTransaction = transactionRepository.save(merchantTransaction);
-		
-		//Update Merchant Balance
-		AccountBalance merchantActBalance = merchantAccount.getAccountBalance();
-		merchantActBalance.setPendingBalance(merchantActBalance.getPendingBalance() - merchantTransaction.getAmount());
-		merchantAccountRepository.save(merchantAccount);
-		
-		//Update Charge Object
-		charge.setStatus(Charge.CHARGE_STATUS_SUCCESS);
-		chargeRepository.save(charge);
+			Charge charge = createCharge(request);
+			
+			charge.setStatus(Charge.CHARGE_STATUS_RECORDED);
+			
+			charge = chargeRepository.save(charge);
+			
+			if(lockService.acquireLock(charge.getUserId()))
+			{		
+				try
+				{
+					Map<Account, Transaction> transactionMap = createTransactions(charge);
+					
+					updateAccountBalance(transactionMap);
+					
+					Iterator<Transaction> transIterator = transactionRepository.save(transactionMap.values()).iterator();
+					
+					accountRepository.save(transactionMap.keySet());
+					
+					charge.setStatus(Charge.CHARGE_STATUS_SUCCESS);
+					
+					charge = chargeRepository.save(charge);
+					
+					while(transIterator.hasNext()){
+						application.postTransaction(transIterator.next());
+					}
+					
+				}
+				catch(Exception exp)
+				{
+					charge.setStatus(Charge.CHARGE_STATUS_FAILED);
+					charge.setFailureMessage(exp.getMessage());
+					charge = chargeRepository.save(charge);
+					throw exp;
+				}
+				finally{
+					lockService.releaseLock(charge.getUserId());
+				}
+			}
+			else
+			{
+				charge.setStatus(Charge.CHARGE_STATUS_FAILED);
+				charge.setFailureMessage("Another transaction in process");
+				charge = chargeRepository.save(charge);
+				throw new ChargeFailedException(charge.getFailureMessage());
+			}
+			
+			return charge;
 	}
 
-	private void processNewCharge(Charge charge) throws InsufficientBalanceException{
-		//Get User Account
-		UserAccount userAccount = userAccountRepository.findOneByUserIdAndCurrency(charge.getUserId(), charge.getCurrency());
-		
-		//Validate Account Balance
-		
-		if(userAccount.getRemainingCreditBalance()<charge.getAmount())
-		{
-			//Update Charge Object
-			charge.setStatus(Charge.CHARGE_STATUS_FAILED);
-			chargeRepository.save(charge);
-			throw new InsufficientBalanceException();
+	
+	protected void updateAccountBalance(Map<Account, Transaction> transactionMap) throws InsufficientBalanceException {
+		Iterator<Account> iterator = transactionMap.keySet().iterator();
+		while(iterator.hasNext()){
+			Account account = iterator.next();
+			if(account.isDebitAccount()){
+				Transaction transaction = transactionMap.get(account);
+				AccountBalance acctBalance = account.getAccountBalance();
+				account.applyTransaction(transaction);
+				acctBalance.setBalanceUpdateDate(new Date().getTime());
+			}
 		}
-		
-		//Create User Transaction
+	}
+
+	protected abstract Map<Account, Transaction> createTransactions(Charge charge) ;
+
+	protected abstract Charge createCharge(T request);
+
+	protected Transaction getDebitTransaction(Charge charge, Account debitAccount) {
 		Transaction userTransaction = new Transaction();
 		userTransaction.setAmount(charge.getAmount());
 		userTransaction.setCurrency(charge.getCurrency());
 		userTransaction.setChargeId(charge.getChargeId());
 		userTransaction.setDebitCreditIndicator(Transaction.DEBIT);
-		userTransaction.setTransactionAccountId(userAccount.getAccountId());
-		userTransaction = transactionRepository.save(userTransaction);
-		
-		//Update user account balance
-		userAccount.setRemainingCreditBalance(userAccount.getRemainingCreditBalance()-userTransaction.getAmount());
-		userAccountRepository.save(userAccount);
-		
-		//Get Merchant Account
-		MerchantAccount merchantAccount = merchantAccountRepository.findOne(charge.getMerchantAccountId());
-		
-		//Create Merchant Transaction
-		Transaction merchantTransaction = new Transaction();
-		merchantTransaction.setAmount(charge.getAmount() - charge.getApplicationFee());
-		merchantTransaction.setCurrency(charge.getCurrency());
-		merchantTransaction.setChargeId(charge.getChargeId());
-		merchantTransaction.setDebitCreditIndicator(Transaction.CREDIT);
-		merchantTransaction.setTransactionAccountId(merchantAccount.getMerchantAccountId());
-		merchantTransaction = transactionRepository.save(merchantTransaction);
-		
-		//Update Merchant Balance
-		AccountBalance merchantActBalance = merchantAccount.getAccountBalance();
-		merchantActBalance.setPendingBalance(merchantActBalance.getPendingBalance() + merchantTransaction.getAmount());
-		merchantAccountRepository.save(merchantAccount);
-		
-		//Update Charge Object
-		charge.setStatus(Charge.CHARGE_STATUS_SUCCESS);
-		chargeRepository.save(charge);
+		userTransaction.setTransactionAccountId(debitAccount.getAccountId());
+		return userTransaction;
 	}
 
 	

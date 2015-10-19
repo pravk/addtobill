@@ -8,5 +8,11 @@ public interface MerchantRepository extends CrudRepository<Merchant, String> {
 
 	Merchant findByMerchantName(String merchantName);
 
+	Merchant findOneByBusinessUrl(String busiessUrl);
+
+	Merchant findOneByMerchantName(String merchantName);
+
+	Merchant findOneByDisplayName(String displayName);
+
 
 }

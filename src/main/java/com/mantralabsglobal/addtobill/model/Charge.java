@@ -1,5 +1,6 @@
 package com.mantralabsglobal.addtobill.model;
 
+import java.util.Date;
 import java.util.Map;
 
 import org.springframework.data.annotation.Id;
@@ -15,13 +16,13 @@ public class Charge extends BaseEntity {
 	
 	@Id
 	private String chargeId;
+	private Date chargeDate;
 	private double amount;
 	private double applicationFee;
-	private String transactionId;
 	private String currency;
 	private String userId;
 	private String description;
-	private String merchantAccountId;
+	private String merchantId;
 	private String failureCode;
 	private String failureMessage;
 	private Map<String,String> metadata;
@@ -33,6 +34,8 @@ public class Charge extends BaseEntity {
 	private String status;
 	private String chargeType;
 	private String linkedChargeId;
+	private String merchantReferenceId;
+	
 	
 	public String getChargeId() {
 		return chargeId;
@@ -52,12 +55,7 @@ public class Charge extends BaseEntity {
 	public void setApplicationFee(double applicationFee) {
 		this.applicationFee = applicationFee;
 	}
-	public String getTransactionId() {
-		return transactionId;
-	}
-	public void setTransactionId(String transactionId) {
-		this.transactionId = transactionId;
-	}
+	
 	public String getCurrency() {
 		return currency;
 	}
@@ -76,12 +74,7 @@ public class Charge extends BaseEntity {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public String getMerchantAccountId() {
-		return merchantAccountId;
-	}
-	public void setMerchantAccountId(String merchantAccountId) {
-		this.merchantAccountId = merchantAccountId;
-	}
+	
 	public String getFailureCode() {
 		return failureCode;
 	}
@@ -147,6 +140,24 @@ public class Charge extends BaseEntity {
 	}
 	public void setLinkedChargeId(String linkedChargeId) {
 		this.linkedChargeId = linkedChargeId;
+	}
+	public void setMerchantId(String merchantId) {
+		this.merchantId = merchantId;
+	}
+	public String getMerchantId() {
+		return this.merchantId ;
+	}
+	public Date getChargeDate() {
+		return chargeDate;
+	}
+	public void setChargeDate(Date chargeDate) {
+		this.chargeDate = chargeDate;
+	}
+	public String getMerchantReferenceId() {
+		return merchantReferenceId;
+	}
+	public void setMerchantReferenceId(String merchantReferenceId) {
+		this.merchantReferenceId = merchantReferenceId;
 	}
 	
 }

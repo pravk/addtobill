@@ -1,16 +1,25 @@
 package com.mantralabsglobal.addtobill.requestModel;
 
-import com.mantralabsglobal.addtobill.model.Charge;
+public abstract class ChargeRequest extends Request{
 
-public class ChargeRequest extends Charge{
+	private String chargeRequestId;
+	private String merchantReferenceId;
+	
 
-	private String token;
-
-	public String getToken() {
-		return token;
+	public String getChargeRequestId() {
+		return chargeRequestId;
 	}
 
-	public void setToken(String token) {
-		this.token = token;
+	public void setChargeRequestId(String chargeRequestId) {
+		this.chargeRequestId = chargeRequestId;
 	}
+
+	public String getMerchantReferenceId() {
+		return merchantReferenceId;
+	}
+
+	public void setMerchantReferenceId(String merchantReferenceId) {
+		this.merchantReferenceId = merchantReferenceId;
+	}
+	
 }

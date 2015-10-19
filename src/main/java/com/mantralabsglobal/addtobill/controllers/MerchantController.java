@@ -8,11 +8,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mantralabsglobal.addtobill.exception.InvalidRequestException;
 import com.mantralabsglobal.addtobill.model.Charge;
 import com.mantralabsglobal.addtobill.model.Merchant;
-import com.mantralabsglobal.addtobill.model.Transaction;
-import com.mantralabsglobal.addtobill.requestModel.ChargeRequest;
+import com.mantralabsglobal.addtobill.requestModel.CancelChargeRequest;
+import com.mantralabsglobal.addtobill.requestModel.NewChargeRequest;
 import com.mantralabsglobal.addtobill.service.UserAccountService;
 import com.mantralabsglobal.addtobill.service.MerchantService;
 import com.mantralabsglobal.addtobill.service.ChargeService;
@@ -42,14 +41,14 @@ public class MerchantController extends BaseController{
 		return merchantService.getMerchant(principal);
 	}
 	
-	@RequestMapping(value="/merchant/transaction", method=RequestMethod.GET)
-	public Transaction getTransaction(@RequestParam(value="id", required=true) String transactionId, Principal principal){
-		return merchantService.getTransaction(transactionId, principal);
+	@RequestMapping(value="/merchant/charge", method=RequestMethod.GET)
+	public Charge getCharge(@RequestParam(value="id", required=true) String chargeId){
+		return transactionService.getCharge(chargeId);
 	}
 	
 	@RequestMapping(value="/merchant/charge", method=RequestMethod.POST)
-	public Charge createCharge(@RequestBody ChargeRequest chargeAttributes, Principal principal) throws Exception{
-		return transactionService.createCharge(chargeAttributes);
+	public Charge createCharge(@RequestBody NewChargeRequest chargeAttributes) throws Exception{
+		return transactionService.newCharge(chargeAttributes);
 	}
 	
 	/*@RequestMapping(value="/merchant/transaction", method=RequestMethod.PUT)
@@ -63,8 +62,8 @@ public class MerchantController extends BaseController{
 	}*/
 	
 	@RequestMapping(value="/merchant/refund", method=RequestMethod.POST)
-	public Charge cancelCharge(@RequestParam(value="id", required=true) String chargeId, Principal principal) throws InvalidRequestException{
-		return transactionService.refundCharge(chargeId, principal.getName());
+	public Charge cancelCharge(@RequestBody CancelChargeRequest chargeAttributes) throws Exception{
+		return transactionService.refundCharge(chargeAttributes);
 	}
 	
 	

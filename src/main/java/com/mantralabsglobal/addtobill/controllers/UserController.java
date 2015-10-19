@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mantralabsglobal.addtobill.exception.InvalidRequestException;
 import com.mantralabsglobal.addtobill.exception.ResourceNotFoundException;
-import com.mantralabsglobal.addtobill.model.UserAccount;
-import com.mantralabsglobal.addtobill.model.Transaction;
+import com.mantralabsglobal.addtobill.exception.UserExistsException;
+import com.mantralabsglobal.addtobill.model.Account;
 import com.mantralabsglobal.addtobill.model.User;
+import com.mantralabsglobal.addtobill.requestModel.UserAccountRequest;
 import com.mantralabsglobal.addtobill.service.UserAccountService;
 import com.mantralabsglobal.addtobill.service.UserService;
 
@@ -32,36 +33,31 @@ public class UserController extends BaseController {
 		return userService.getUserDetails(principal);
 	}
 	
+	@RequestMapping(value="/user/register", method=RequestMethod.POST)
+	public User createNewUser(@RequestBody User user) throws ResourceNotFoundException, InvalidRequestException, UserExistsException{
+		return userService.registerUser(user);
+	}
+	
+	@RequestMapping(value="/user/account", method=RequestMethod.POST)
+	public Account createUser(@RequestBody UserAccountRequest user) throws UserExistsException, InvalidRequestException{
+		
+		return userService.createUserAccount(user.getUserId(), user.getCurrency());
+	}
+	
 	@RequestMapping(value="/user/accounts", method=RequestMethod.GET)
-	public List<UserAccount> getUserAccounts(Principal principal) throws ResourceNotFoundException{
+	public List<Account> getUserAccounts(Principal principal) throws ResourceNotFoundException{
 		
 		return userService.getUserAccounts(principal);
 	}
 
 	@RequestMapping(value="/user/account", method=RequestMethod.GET)
-	public UserAccount getAccount(@RequestParam(value="id") String accountId) throws ResourceNotFoundException{
-		UserAccount acct = accountService.getAccountDetails(accountId);
+	public Account getAccount(@RequestParam(value="id") String accountId) throws ResourceNotFoundException{
+		Account acct = accountService.getAccountDetails(accountId);
 		if(acct != null)
 			return acct;
 		throw new ResourceNotFoundException(); 
 	}
-	
-	/*@RequestMapping(value="/user/signup", method=RequestMethod.POST)
-	public User createUser(@RequestBody User user) throws UserExistsException{
-		return userService.createUser(user);
-	}*/
-	
-	@RequestMapping(value="/user/authorize", method=RequestMethod.POST)
-	public String getAuthorizationCode(@RequestBody Transaction transaction ) {
-		//return userService.createUser(user);
-		throw new sun.reflect.generics.reflectiveObjects.NotImplementedException();
-	}
-	
-	@RequestMapping(value="/user/transaction", method=RequestMethod.GET)
-	public Transaction getTransaction(@RequestParam(value="id", required=true) String transactionId, Principal principal){
-		return userService.getUserTransaction(principal, transactionId);
-	}
-	
+
 	public UserService getUserService() {
 		return userService;
 	}
