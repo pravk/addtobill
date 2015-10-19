@@ -23,7 +23,7 @@ import com.mantralabsglobal.addtobill.model.User;
 
 import com.mantralabsglobal.addtobill.repository.UserRepository;
 import com.mantralabsglobal.addtobill.requestModel.UserToken;
-import com.mantralabsglobal.addtobill.responseModel.UserTokenResponse;
+import com.mantralabsglobal.addtobill.responseModel.UserChargeToken;
 
 @Service
 public class AdminService extends BaseService{
@@ -91,7 +91,7 @@ public class AdminService extends BaseService{
 		return merchantRepository.findOne(merchantId);
 	}
 
-	public UserTokenResponse generateUserAuthToken(UserToken userToken) throws Exception {
+	public UserChargeToken generateUserAuthToken(UserToken userToken) throws Exception {
 		Assert.notNull(userToken);
 		Assert.hasText(userToken.getCurrency());
 		Assert.hasText(userToken.getMerchantId());
@@ -121,7 +121,7 @@ public class AdminService extends BaseService{
 		userToken2.setUserId(userToken.getUserId());
 		userToken2.setExpiry(DateUtils.addMinutes(new Date(), 3).getTime());
 		String token = generateToken(userToken2);
-		UserTokenResponse response = new UserTokenResponse();
+		UserChargeToken response = new UserChargeToken();
 		response.setToken(token);
 		return response;
 	}

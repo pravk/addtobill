@@ -20,7 +20,7 @@ import com.mantralabsglobal.addtobill.requestModel.CancelChargeRequest;
 import com.mantralabsglobal.addtobill.requestModel.MerchantAccountRequest;
 import com.mantralabsglobal.addtobill.requestModel.NewChargeRequest;
 import com.mantralabsglobal.addtobill.requestModel.UserToken;
-import com.mantralabsglobal.addtobill.responseModel.UserTokenResponse;
+import com.mantralabsglobal.addtobill.responseModel.UserChargeToken;
 import com.mantralabsglobal.addtobill.model.Account;
 import com.mantralabsglobal.addtobill.model.Charge;
 import com.mantralabsglobal.addtobill.model.Merchant;
@@ -60,7 +60,7 @@ public class AdminController {
 	}
 	
 	@RequestMapping(value="admin/user/authToken", method=RequestMethod.POST)
-	public UserTokenResponse generateUserAuthToken(@RequestBody UserToken userToken) throws Exception{
+	public UserChargeToken generateUserAuthToken(@RequestBody UserToken userToken) throws Exception{
 		return adminService.generateUserAuthToken(userToken);
 	}
 	

@@ -6,13 +6,16 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DesEncryptor {
 	
 	private static final String ALGORITHM = "AES";
-    private static final byte[] keyValue = "ADBSJHJS12547896".getBytes();
+	
+	@Value("app.token.secret")
+    private static String keyValue;
 
     /**
      * @param args
@@ -48,7 +51,7 @@ public class DesEncryptor {
     }
 
     private static Key generateKey() throws Exception {
-        Key key = new SecretKeySpec(keyValue, ALGORITHM);
+        Key key = new SecretKeySpec(keyValue.getBytes(), ALGORITHM);
         return key;
     }
 }

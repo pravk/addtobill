@@ -3,6 +3,8 @@ package com.mantralabsglobal.addtobill.controllers;
 import java.security.Principal;
 import java.util.List;
 
+import javax.naming.AuthenticationException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +18,8 @@ import com.mantralabsglobal.addtobill.exception.UserExistsException;
 import com.mantralabsglobal.addtobill.model.Account;
 import com.mantralabsglobal.addtobill.model.User;
 import com.mantralabsglobal.addtobill.requestModel.UserAccountRequest;
+import com.mantralabsglobal.addtobill.requestModel.UserAuthRequest;
+import com.mantralabsglobal.addtobill.responseModel.UserAuthToken;
 import com.mantralabsglobal.addtobill.service.UserAccountService;
 import com.mantralabsglobal.addtobill.service.UserService;
 
@@ -36,6 +40,11 @@ public class UserController extends BaseController {
 	@RequestMapping(value="/user/register", method=RequestMethod.POST)
 	public User createNewUser(@RequestBody User user) throws ResourceNotFoundException, InvalidRequestException, UserExistsException{
 		return userService.registerUser(user);
+	}
+	
+	@RequestMapping(value="/user/login", method=RequestMethod.POST)
+	public UserAuthToken loginUser(@RequestBody UserAuthRequest request) throws ResourceNotFoundException, InvalidRequestException, UserExistsException, AuthenticationException{
+		return userService.loginUser(request);
 	}
 	
 	@RequestMapping(value="/user/account", method=RequestMethod.POST)

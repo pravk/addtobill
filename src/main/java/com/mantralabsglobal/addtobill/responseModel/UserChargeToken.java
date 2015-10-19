@@ -1,6 +1,6 @@
 package com.mantralabsglobal.addtobill.responseModel;
 
-public class UserTokenResponse {
+public class UserChargeToken {
 
 	private String token;
 

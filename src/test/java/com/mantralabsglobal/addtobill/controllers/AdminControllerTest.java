@@ -35,7 +35,7 @@ import com.mantralabsglobal.addtobill.model.User;
 import com.mantralabsglobal.addtobill.repository.MerchantRepository;
 import com.mantralabsglobal.addtobill.requestModel.NewChargeRequest;
 import com.mantralabsglobal.addtobill.requestModel.UserToken;
-import com.mantralabsglobal.addtobill.responseModel.UserTokenResponse;
+import com.mantralabsglobal.addtobill.responseModel.UserChargeToken;
 import com.mantralabsglobal.addtobill.service.AdminService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -169,7 +169,7 @@ public class AdminControllerTest {
 		
 		
 		ObjectMapper mapper = new ObjectMapper();
-		UserTokenResponse acct =mapper.readValue(response.getBody(), UserTokenResponse.class);
+		UserChargeToken acct =mapper.readValue(response.getBody(), UserChargeToken.class);
 		assertThat(acct.getToken(), notNullValue());
 	}
 	
@@ -177,7 +177,7 @@ public class AdminControllerTest {
 		
 		HttpEntity<UserToken> entity = new HttpEntity<UserToken>(token, getAuthHeaders());
 		
-		ResponseEntity<UserTokenResponse> response = restTemplate.postForEntity(getBaseUrl() + "admin/user/authToken", entity, UserTokenResponse.class);
+		ResponseEntity<UserChargeToken> response = restTemplate.postForEntity(getBaseUrl() + "admin/user/authToken", entity, UserChargeToken.class);
 		if(merchant.isChargesEnabled())
 			assertThat( response.getStatusCode() , equalTo(HttpStatus.OK));
 		else
@@ -185,7 +185,7 @@ public class AdminControllerTest {
 			assertThat( response.getStatusCode() , equalTo(HttpStatus.BAD_REQUEST));
 			merchant.setChargesEnabled(true);
 			merchant = merchantRepository.save(merchant);
-			response = restTemplate.postForEntity(getBaseUrl() + "admin/user/authToken", entity, UserTokenResponse.class);
+			response = restTemplate.postForEntity(getBaseUrl() + "admin/user/authToken", entity, UserChargeToken.class);
 			assertThat( response.getStatusCode() , equalTo(HttpStatus.OK));
 		}
 		return response.getBody().getToken();
