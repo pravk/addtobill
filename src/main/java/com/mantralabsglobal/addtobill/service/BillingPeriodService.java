@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
 import com.mantralabsglobal.addtobill.Application;
+import com.mantralabsglobal.addtobill.config.BillingPeriodProperties;
 import com.mantralabsglobal.addtobill.model.Account;
 import com.mantralabsglobal.addtobill.model.BillingPeriod;
 import com.mantralabsglobal.addtobill.model.Transaction;
@@ -46,6 +47,9 @@ public class BillingPeriodService {
 	@Autowired
 	private TransactionRepository transactionRepository;
 	
+	@Autowired
+	BillingPeriodProperties billingPeriodProperties;
+	
 	@Subscribe
 	@AllowConcurrentEvents
 	public void handleTransaction(Transaction transaction){
@@ -55,8 +59,7 @@ public class BillingPeriodService {
 		if(user != null)
 		{
 			Date billPeriodStart = DateUtils.truncate(new Date(), Calendar.DATE);
-			Date billPeriodEnd = DateUtils.ceiling(new Date(), Calendar.DATE);
-			
+			Date billPeriodEnd = DateUtils.addMilliseconds(DateUtils.addDays(DateUtils.ceiling(new Date(), Calendar.DATE), billingPeriodProperties.getDefaultDurationDays()), -1);
 			
 			BillingPeriod billingPeriod =billingPeriodRepository.findOneByDateAndAccount( billPeriodStart , account.getAccountId());
 			if(billingPeriod == null)
