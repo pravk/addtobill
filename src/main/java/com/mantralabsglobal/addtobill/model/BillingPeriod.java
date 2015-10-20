@@ -84,4 +84,8 @@ public class BillingPeriod extends BaseEntity {
 	public String getFailureMessage(){
 		return this.failureMessage;
 	}
+
+	public boolean isClosed() {
+		return "C".equals(getStatus());
+	}
 }
