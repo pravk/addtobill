@@ -47,7 +47,7 @@ public class MerchantController extends BaseController{
 	}
 	
 	@RequestMapping(value="/merchant/register",method=RequestMethod.POST)
-	public Merchant registerMerchant(Merchant merchant) throws Exception{
+	public Merchant registerMerchant(@RequestBody Merchant merchant) throws Exception{
 		return merchantService.registerMerchant(merchant);
 	}
 	
