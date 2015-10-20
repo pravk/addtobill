@@ -29,31 +29,32 @@ public class MerchantAuthenticationService {
 
 		if(request == null)
 			return null;
-		
+		Merchant merchant = null;
 		String authCredentials = request.getHeader(AUTHENTICATION_HEADER);
 		// header value format will be "Basic encodedstring" for Basic
 		// authentication. Example "Basic YWRtaW46YWRtaW4="
-		final String encodedUserPassword = authCredentials.replaceFirst("Basic"
-				+ " ", "");
-		String usernameAndPassword = null;
-		try {
-			byte[] decodedBytes = Base64.decodeBase64(
-					encodedUserPassword);
-			usernameAndPassword = new String(decodedBytes, "UTF-8");
-		} catch (IOException e) {
-			logger.warn("Failed to parse token", e);
-		}
-		final StringTokenizer tokenizer = new StringTokenizer(
-				usernameAndPassword, ":");
-		final String userName = tokenizer.nextToken();
-		final String password = tokenizer.nextToken();
+		if(authCredentials != null)
+		{
+			final String encodedUserPassword = authCredentials.replaceFirst("Basic"
+					+ " ", "");
+			String usernameAndPassword = null;
+			try {
+				byte[] decodedBytes = Base64.decodeBase64(
+						encodedUserPassword);
+				usernameAndPassword = new String(decodedBytes, "UTF-8");
+			} catch (IOException e) {
+				logger.warn("Failed to parse token", e);
+			}
+			final StringTokenizer tokenizer = new StringTokenizer(
+					usernameAndPassword, ":");
+			final String userName = tokenizer.nextToken();
+			final String password = tokenizer.nextToken();
 
-		
-		Merchant merchant = null;
-		try {
-			merchant = merchantService.athenticateMerchant(userName, password);
-		} catch (AuthenticationException e) {
-			logger.warn("Failed to authenticate merchant", e);
+			try {
+				merchant = merchantService.athenticateMerchant(userName, password);
+			} catch (AuthenticationException e) {
+				logger.warn("Failed to authenticate merchant", e);
+			}
 		}
 		
 		if(merchant != null)
