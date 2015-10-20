@@ -93,7 +93,7 @@ public class MerchantService extends BaseService{
 		if(merchant == null)
 			throw new UsernameNotFoundException("Invalid merchant Id");
 		
-		if(passwordEncoder.matches(secret, merchant.getSecretKey()))
+		if(secret.matches(merchant.getSecretKey()))
 		{
 			return merchant;
 		}

@@ -33,6 +33,11 @@ public class ChargeService extends BaseService{
 		UserToken token = resolveToken(chargeRequest.getToken());
 		validateToken(token, chargeRequest);
 		
+		chargeRequest.setUserId(token.getUserId());
+		chargeRequest.setAmount(token.getAmount());
+		chargeRequest.setCurrency(token.getCurrency());
+		chargeRequest.setMerchantId(token.getMerchantId());
+		
 		chargeRequest = chargeRequestRepository.save(chargeRequest);
 		return newChargeProcessor.processRequest(chargeRequest);
 	}
