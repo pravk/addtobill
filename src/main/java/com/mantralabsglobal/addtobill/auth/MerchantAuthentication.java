@@ -26,7 +26,7 @@ public class MerchantAuthentication implements Authentication {
 
     @Override
     public String getName() {
-        return merchant.getMerchantName();
+        return merchant.getMerchantId();
     }
 
     @Override
