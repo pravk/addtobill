@@ -70,7 +70,8 @@ public class BillGenerator {
 				
 				//Mark period as closed
 				period.setStatus("C");
-				billingPeriodRepository.save(period);
+				period = billingPeriodRepository.save(period);
+				application.postBillingPeriodStatusChange(period);
 			}
 			catch(Exception exp){
 				period.setStatus("E");
