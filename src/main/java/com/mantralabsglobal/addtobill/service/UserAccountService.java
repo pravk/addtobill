@@ -22,7 +22,7 @@ public class UserAccountService  extends BaseService{
 		account.setLowerLimit(Double.MIN_VALUE);
 		AccountBalance acctBalance = new AccountBalance();
 		acctBalance.setRunningBalance(0);
-		acctBalance.setBalanceUpdateDate(new Date().getTime());
+		acctBalance.setBalanceUpdateDate(new Date());
 		account.setAccountBalance(acctBalance);
 		account.setOwnerId(user.getUserId());
 		account.setCurrency(currency);

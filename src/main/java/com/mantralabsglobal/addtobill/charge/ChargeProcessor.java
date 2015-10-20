@@ -99,7 +99,7 @@ public abstract class ChargeProcessor<T extends ChargeRequest> {
 				Transaction transaction = transactionMap.get(account);
 				AccountBalance acctBalance = account.getAccountBalance();
 				account.applyTransaction(transaction);
-				acctBalance.setBalanceUpdateDate(new Date().getTime());
+				acctBalance.setBalanceUpdateDate(new Date());
 			}
 		}
 	}

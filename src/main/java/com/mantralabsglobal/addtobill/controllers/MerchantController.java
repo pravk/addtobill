@@ -8,9 +8,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mantralabsglobal.addtobill.exception.AccountExistsException;
+import com.mantralabsglobal.addtobill.exception.MerchantDoesNotExistException;
+import com.mantralabsglobal.addtobill.exception.MerchantExistsException;
+import com.mantralabsglobal.addtobill.model.Account;
 import com.mantralabsglobal.addtobill.model.Charge;
 import com.mantralabsglobal.addtobill.model.Merchant;
 import com.mantralabsglobal.addtobill.requestModel.CancelChargeRequest;
+import com.mantralabsglobal.addtobill.requestModel.MerchantAccountRequest;
 import com.mantralabsglobal.addtobill.requestModel.NewChargeRequest;
 import com.mantralabsglobal.addtobill.service.UserAccountService;
 import com.mantralabsglobal.addtobill.service.MerchantService;
@@ -39,6 +44,21 @@ public class MerchantController extends BaseController{
 	@RequestMapping(value="/merchant",method=RequestMethod.GET)
 	public Merchant getMerchant(Principal principal){
 		return merchantService.getMerchant(principal);
+	}
+	
+	@RequestMapping(value="/merchant/register",method=RequestMethod.POST)
+	public Merchant registerMerchant(Merchant merchant) throws Exception{
+		return merchantService.registerMerchant(merchant);
+	}
+	
+	@RequestMapping(value="merchant",method=RequestMethod.PUT)
+	public Merchant updateMerchant(@RequestBody Merchant merchant) throws MerchantExistsException, AccountExistsException, MerchantDoesNotExistException{
+		return merchantService.updateMerchant(merchant);
+	}
+	
+	@RequestMapping(value="merchant/account",method=RequestMethod.POST)
+	public Account createMerchant(@RequestBody MerchantAccountRequest merchantAccountRequest) throws MerchantExistsException, AccountExistsException, MerchantDoesNotExistException{
+		return merchantService.createMerchantAccount(merchantAccountRequest.getMerchantId(), merchantAccountRequest.getCurrency());
 	}
 	
 	@RequestMapping(value="/merchant/charge", method=RequestMethod.GET)

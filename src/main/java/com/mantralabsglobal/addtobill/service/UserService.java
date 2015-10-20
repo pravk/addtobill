@@ -24,7 +24,10 @@ import com.mantralabsglobal.addtobill.exception.UserExistsException;
 import com.mantralabsglobal.addtobill.model.Account;
 import com.mantralabsglobal.addtobill.model.Merchant;
 import com.mantralabsglobal.addtobill.model.User;
+import com.mantralabsglobal.addtobill.model.UserMerchant;
 import com.mantralabsglobal.addtobill.requestModel.UserAuthRequest;
+import com.mantralabsglobal.addtobill.requestModel.UserChargeTokenRequest;
+import com.mantralabsglobal.addtobill.requestModel.UserMerchantRequest;
 import com.mantralabsglobal.addtobill.requestModel.UserToken;
 import com.mantralabsglobal.addtobill.responseModel.UserAuthToken;
 import com.mantralabsglobal.addtobill.responseModel.UserChargeToken;
@@ -139,12 +142,11 @@ public class UserService  extends BaseService implements org.springframework.sec
 	}
 	
 	
-	public UserChargeToken generateUserAuthToken(UserToken userToken) throws Exception {
+	public UserChargeToken generateUserAuthToken(UserChargeTokenRequest userToken) throws Exception {
 		Assert.notNull(userToken);
 		Assert.hasText(userToken.getCurrency(), "Currency cannot be null");
 		Assert.hasText(userToken.getMerchantId(),"MerchantId cannot be null");
 		Assert.isTrue(userToken.getAmount()>0, "Amount needs to be greater than 0");
-		Assert.isTrue(userToken.getUserId() == null, "UserId cannot be part of body");
 		
 		User user = getLoggedInUser();
 		Merchant merchant = merchantRepository.findOne(userToken.getMerchantId());
@@ -153,6 +155,10 @@ public class UserService  extends BaseService implements org.springframework.sec
 		
 		if(!merchant.isChargesEnabled())
 			throw new InvalidRequestException("Charge not enabled for the Merchant");
+		
+		UserMerchant userMerchant = userMerchantRepository.findByMerchantIdAndUserId(merchant.getMerchantId(), user.getUserId());
+		
+		Assert.notNull(userMerchant, "User merchant association not availale");
 		
 		Account userAccount = accountRepository.findOneByOwnerIdAndCurrency(user.getUserId(), userToken.getCurrency());
 		if(userAccount == null)
@@ -172,6 +178,32 @@ public class UserService  extends BaseService implements org.springframework.sec
 		UserChargeToken response = new UserChargeToken();
 		response.setToken(token);
 		return response;
+	}
+
+	public UserMerchant createUserMerchantAssociation(UserMerchantRequest request) {
+		Assert.notNull(request);
+		Assert.hasText(request.getMerchantId(), "Merchant id cannot be empty");
+		Assert.hasText(request.getVendorUserId(), "Vendor user Id cannot be empty");
+		
+		User user = getLoggedInUser();
+		Merchant merchant = merchantRepository.findOne(request.getMerchantId());
+		
+		Assert.notNull(merchant, "Invalid merchant Id");
+		
+		UserMerchant userMerchant = userMerchantRepository.findOneByVendorUserId(request.getVendorUserId());
+		Assert.isNull(userMerchant, "vendor user id is already registered");
+		
+		userMerchant = new UserMerchant();
+		userMerchant.setMerchantId(merchant.getMerchantId());
+		userMerchant.setUserId(user.getUserId());
+		userMerchant.setVendorUserId(request.getVendorUserId());
+		return userMerchantRepository.save(userMerchant);
+	}
+
+	public UserMerchant fetchUserMerchantAssociation(String merchantId) {
+		Assert.hasText(merchantId, "Merchant id cannot be empty");
+		User user = getLoggedInUser();
+		return userMerchantRepository.findByMerchantIdAndUserId(merchantId, user.getUserId());
 	}
 		
 }

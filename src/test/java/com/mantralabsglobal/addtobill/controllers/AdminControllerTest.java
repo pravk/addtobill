@@ -98,7 +98,7 @@ public class AdminControllerTest {
 	}
 	
 	
-	public Merchant createMerchantAccount(boolean chargesEnabled, boolean transfersEnabled) throws JsonParseException, JsonMappingException, IOException{
+	public Merchant createMerchant(boolean chargesEnabled, boolean transfersEnabled) throws JsonParseException, JsonMappingException, IOException{
 		String id = ObjectId.get().toString() ;
 		Merchant merchant = new Merchant();
 		merchant.setChargesEnabled(chargesEnabled);
@@ -114,7 +114,7 @@ public class AdminControllerTest {
 		
 		HttpEntity<Merchant> entity = new HttpEntity<Merchant>(merchant, getAuthHeaders());
 		
-		ResponseEntity<String> response = restTemplate.postForEntity(getBaseUrl() + "/admin/merchant", entity, String.class);
+		ResponseEntity<String> response = restTemplate.postForEntity(getBaseUrl() + "/merchant", entity, String.class);
 		assertThat( response.getStatusCode() , equalTo(HttpStatus.OK));
 		ObjectMapper mapper = new ObjectMapper();
 		merchant = mapper.readValue(response.getBody(), Merchant.class);
@@ -146,7 +146,7 @@ public class AdminControllerTest {
 	@Test
 	public void generateToken() throws JsonParseException, JsonMappingException, IOException{
 		
-		Merchant merchant = createMerchantAccount(false, false);
+		Merchant merchant = createMerchant(false, false);
 		User user = createUserAccount();
 		
 		UserToken token = new UserToken();
@@ -194,7 +194,7 @@ public class AdminControllerTest {
 	@Test
 	public void createChargeRequest() throws JsonParseException, JsonMappingException, IOException{
 		
-		Merchant merchant = createMerchantAccount(true, false);
+		Merchant merchant = createMerchant(true, false);
 		User user = createUserAccount();
 		
 		UserToken token = new UserToken();

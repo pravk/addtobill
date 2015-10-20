@@ -17,9 +17,11 @@ import com.mantralabsglobal.addtobill.exception.ResourceNotFoundException;
 import com.mantralabsglobal.addtobill.exception.UserExistsException;
 import com.mantralabsglobal.addtobill.model.Account;
 import com.mantralabsglobal.addtobill.model.User;
+import com.mantralabsglobal.addtobill.model.UserMerchant;
 import com.mantralabsglobal.addtobill.requestModel.UserAccountRequest;
 import com.mantralabsglobal.addtobill.requestModel.UserAuthRequest;
-import com.mantralabsglobal.addtobill.requestModel.UserToken;
+import com.mantralabsglobal.addtobill.requestModel.UserChargeTokenRequest;
+import com.mantralabsglobal.addtobill.requestModel.UserMerchantRequest;
 import com.mantralabsglobal.addtobill.responseModel.UserAuthToken;
 import com.mantralabsglobal.addtobill.responseModel.UserChargeToken;
 import com.mantralabsglobal.addtobill.service.UserAccountService;
@@ -55,8 +57,20 @@ public class UserController extends BaseController {
 		return userService.createUserAccount(user.getUserId(), user.getCurrency());
 	}
 	
+	@RequestMapping(value="/user/merchant", method=RequestMethod.POST)
+	public UserMerchant createUserMerchantAssociation(@RequestBody UserMerchantRequest request) throws UserExistsException, InvalidRequestException{
+		
+		return userService.createUserMerchantAssociation(request);
+	}
+	
+	@RequestMapping(value="/user/merchant", method=RequestMethod.GET)
+	public UserMerchant getUserMerchantAssociation(@RequestParam(value="merchantId", required=false) String merchantId) throws UserExistsException, InvalidRequestException{
+		
+		return userService.fetchUserMerchantAssociation(merchantId);
+	}
+	
 	@RequestMapping(value="user/authToken", method=RequestMethod.POST)
-	public UserChargeToken generateUserAuthToken(@RequestBody UserToken userToken) throws Exception{
+	public UserChargeToken generateUserAuthToken(@RequestBody UserChargeTokenRequest userToken) throws Exception{
 		return userService.generateUserAuthToken(userToken);
 	}
 	

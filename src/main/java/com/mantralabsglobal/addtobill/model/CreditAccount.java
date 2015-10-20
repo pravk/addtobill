@@ -30,7 +30,7 @@ public class CreditAccount extends Account {
 		else
 		{
 			getAccountBalance().setRunningBalance(newBalance);
-			getAccountBalance().setBalanceUpdateDate(new Date().getTime());
+			getAccountBalance().setBalanceUpdateDate(new Date());
 		}
 	}
 

@@ -10,18 +10,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mantralabsglobal.addtobill.exception.AccountExistsException;
 import com.mantralabsglobal.addtobill.exception.InvalidRequestException;
-import com.mantralabsglobal.addtobill.exception.MerchantDoesNotExistException;
-import com.mantralabsglobal.addtobill.exception.MerchantExistsException;
 import com.mantralabsglobal.addtobill.exception.ResourceNotFoundException;
 import com.mantralabsglobal.addtobill.exception.UserExistsException;
 import com.mantralabsglobal.addtobill.requestModel.CancelChargeRequest;
-import com.mantralabsglobal.addtobill.requestModel.MerchantAccountRequest;
 import com.mantralabsglobal.addtobill.requestModel.NewChargeRequest;
 import com.mantralabsglobal.addtobill.model.Account;
 import com.mantralabsglobal.addtobill.model.Charge;
-import com.mantralabsglobal.addtobill.model.Merchant;
 import com.mantralabsglobal.addtobill.model.User;
 import com.mantralabsglobal.addtobill.service.AdminService;
 import com.mantralabsglobal.addtobill.service.ChargeService;
@@ -73,26 +68,6 @@ public class AdminController {
 		if(acct != null)
 			return acct;
 		throw new ResourceNotFoundException(); 
-	}
-	
-	@RequestMapping(value="admin/merchant",method=RequestMethod.POST)
-	public Merchant createMerchant(@RequestBody Merchant merchant) throws MerchantExistsException, AccountExistsException, MerchantDoesNotExistException{
-		return adminService.createMerchant(merchant);
-	}
-	
-	@RequestMapping(value="admin/merchant",method=RequestMethod.PUT)
-	public Merchant updateMerchant(@RequestBody Merchant merchant) throws MerchantExistsException, AccountExistsException, MerchantDoesNotExistException{
-		return adminService.updateMerchant(merchant);
-	}
-	
-	@RequestMapping(value="admin/merchant/account",method=RequestMethod.POST)
-	public Account createMerchant(@RequestBody MerchantAccountRequest merchantAccountRequest) throws MerchantExistsException, AccountExistsException, MerchantDoesNotExistException{
-		return adminService.createMerchantAccount(merchantAccountRequest.getMerchantId(), merchantAccountRequest.getCurrency());
-	}
-
-	@RequestMapping(value="admin/merchant",method=RequestMethod.GET)
-	public Merchant createMerchant(@RequestParam(value="id", required=true) String merchantId) throws MerchantExistsException{
-		return adminService.getMerchant(merchantId);
 	}
 	
 	@RequestMapping(value="admin/charge", method=RequestMethod.POST)
