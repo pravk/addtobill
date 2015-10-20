@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.mantralabsglobal.addtobill.crypto.DesEncryptor;
 import com.mantralabsglobal.addtobill.model.Account;
+import com.mantralabsglobal.addtobill.model.Merchant;
 import com.mantralabsglobal.addtobill.model.User;
 import com.mantralabsglobal.addtobill.repository.AccountRepository;
 import com.mantralabsglobal.addtobill.repository.ChargeRepository;
@@ -81,4 +82,11 @@ public abstract class BaseService {
 		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
 		return userRepository.findOneByEmail(userName);
 	}
+	
+
+	protected Merchant getLoggedInMerchant() {
+		String merchantId = SecurityContextHolder.getContext().getAuthentication().getName();
+		return merchantRepository.findOne(merchantId);
+	}
+
 }

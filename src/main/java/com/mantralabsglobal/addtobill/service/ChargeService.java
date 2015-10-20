@@ -1,12 +1,14 @@
 package com.mantralabsglobal.addtobill.service;
 
 import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mantralabsglobal.addtobill.charge.ChargeProcessor;
 import com.mantralabsglobal.addtobill.exception.InvalidTokenException;
 import com.mantralabsglobal.addtobill.model.Charge;
+import com.mantralabsglobal.addtobill.model.Merchant;
 import com.mantralabsglobal.addtobill.repository.ChargeRefundRequestRepository;
 import com.mantralabsglobal.addtobill.repository.NewChargeRequestRepository;
 import com.mantralabsglobal.addtobill.requestModel.CancelChargeRequest;
@@ -31,7 +33,9 @@ public class ChargeService extends BaseService{
 	public Charge newCharge(NewChargeRequest chargeRequest) throws Exception {
 		
 		UserToken token = resolveToken(chargeRequest.getToken());
-		validateToken(token, chargeRequest);
+		Merchant merchant = getLoggedInMerchant();
+		
+		validateToken(token, merchant);
 		
 		chargeRequest.setUserId(token.getUserId());
 		chargeRequest.setAmount(token.getAmount());
@@ -43,25 +47,15 @@ public class ChargeService extends BaseService{
 	}
 
 
-	protected void validateToken(UserToken token, NewChargeRequest chargeAttributes) throws InvalidTokenException {
+	protected void validateToken(UserToken token, Merchant merchant) throws InvalidTokenException {
 		if(token.getExpiry() < new Date().getTime())
 		{
 			throw new InvalidTokenException("Token is expired!");
 		}
-		else if(!token.getCurrency().equals(chargeAttributes.getCurrency())){
-			throw new InvalidTokenException("Invalid currency");
-		}
-		else if (token.getAmount() != chargeAttributes.getAmount()){
-			throw new InvalidTokenException("Invalid Amount");
-		}
-		else if(!token.getMerchantId().equals(chargeAttributes.getMerchantId()))
+		else if(!token.getMerchantId().equals(merchant.getMerchantId()))
 		{
 			throw new InvalidTokenException("Invalid Merchant Id");
 		}
-		else if(! token.getUserId().equals(chargeAttributes.getUserId())){
-			throw new InvalidTokenException("Invalid User Id");
-		}
-		
 	}
 
 
