@@ -138,6 +138,7 @@ public class UserService  extends BaseService implements org.springframework.sec
 		}
 	}
 	
+	
 	public UserChargeToken generateUserAuthToken(UserToken userToken) throws Exception {
 		Assert.notNull(userToken);
 		Assert.hasText(userToken.getCurrency(), "Currency cannot be null");

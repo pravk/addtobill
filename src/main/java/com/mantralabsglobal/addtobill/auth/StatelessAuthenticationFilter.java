@@ -14,20 +14,27 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
+import com.mantralabsglobal.addtobill.service.MerchantAuthenticationService;
 import com.mantralabsglobal.addtobill.service.TokenAuthenticationService;
 
 @Component
 public class StatelessAuthenticationFilter extends GenericFilterBean {
 
 	@Autowired
-    private TokenAuthenticationService authenticationService;
- 
+    private TokenAuthenticationService tokenAuthenticationService;
+	
+	@Autowired
+    private MerchantAuthenticationService merchantAuthenticationService;
+	
  
      @Override
      public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
              throws IOException, ServletException {
          HttpServletRequest httpRequest = (HttpServletRequest) request;
-         Authentication authentication = authenticationService.getAuthentication(httpRequest);
+         Authentication authentication = tokenAuthenticationService.getAuthentication(httpRequest);
+         if(authentication == null)
+        	 authentication = merchantAuthenticationService.authenticate(httpRequest);
+         
          SecurityContextHolder.getContext().setAuthentication(authentication);
          filterChain.doFilter(request, response);
          SecurityContextHolder.getContext().setAuthentication(null);

@@ -7,7 +7,6 @@ import org.springframework.data.mongodb.core.index.Indexed;
 
 public class User extends BaseEntity{
 
-	public static final String ROLE_MERCHANT = "ROLE_MERCHANT";
 	public static final String ROLE_USER = "ROLE_USER";
 	public static final String ROLE_ADMIN = "ROLE_ADMIN";
 	

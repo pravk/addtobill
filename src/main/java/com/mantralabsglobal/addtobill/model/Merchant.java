@@ -8,6 +8,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Merchant extends BaseEntity{
 
+	public static final String ROLE_MERCHANT = "MERCHANT";
+
 	@Id
 	private String merchantId;
 	

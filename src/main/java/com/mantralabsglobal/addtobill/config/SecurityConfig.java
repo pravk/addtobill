@@ -13,6 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.mantralabsglobal.addtobill.auth.StatelessAuthenticationFilter;
+import com.mantralabsglobal.addtobill.model.Merchant;
+import com.mantralabsglobal.addtobill.model.User;
 import com.mantralabsglobal.addtobill.service.UserService;
 
 @Configuration
@@ -31,9 +33,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().
 		antMatchers("/user/register").permitAll().
 		antMatchers("/user/login").permitAll().
-		antMatchers("/merchant/**").access("hasRole('ROLE_MERCHANT')").
-		antMatchers("/user/**").access("hasRole('ROLE_USER')").
-		antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')").
+		antMatchers("/merchant/**").access("hasRole('" + Merchant.ROLE_MERCHANT + "')").
+		antMatchers("/user/**").access("hasRole('"+ User.ROLE_USER +"')").
+		antMatchers("/admin/**").access("hasRole('"+ User.ROLE_ADMIN + "')").
 		anyRequest().access("hasRole('ROLE_ADMIN')").
 		and().csrf().disable().
 		addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);

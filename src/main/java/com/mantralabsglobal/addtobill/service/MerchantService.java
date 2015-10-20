@@ -2,10 +2,13 @@ package com.mantralabsglobal.addtobill.service;
 
 import java.security.Principal;
 import javax.annotation.PostConstruct;
+import javax.naming.AuthenticationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.google.common.eventbus.Subscribe;
@@ -27,6 +30,9 @@ public class MerchantService extends BaseService{
 	
 	@Autowired
 	private AccountRepository accountrepository;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	
 	@PostConstruct
@@ -71,6 +77,21 @@ public class MerchantService extends BaseService{
 
 	public void setApplication(Application application) {
 		this.application = application;
+	}
+
+	public Merchant athenticateMerchant(String merchantId, String secret) throws AuthenticationException {
+		Merchant merchant = merchantRepository.findOne(merchantId);
+		if(merchant == null)
+			throw new UsernameNotFoundException("Invalid merchant Id");
+		
+		if(passwordEncoder.matches(secret, merchant.getSecretKey()))
+		{
+			return merchant;
+		}
+		else
+		{
+			throw new AuthenticationException("Incorrect secret key");
+		}
 	}
 	
 }
