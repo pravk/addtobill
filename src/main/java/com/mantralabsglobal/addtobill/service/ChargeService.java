@@ -2,6 +2,8 @@ package com.mantralabsglobal.addtobill.service;
 
 import java.util.Date;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,7 @@ import com.mantralabsglobal.addtobill.requestModel.UserToken;
 @Service
 public class ChargeService extends BaseService{
 	
+	private static final Logger logger =LoggerFactory.getLogger(ChargeService.class);
 	@Autowired
 	protected NewChargeRequestRepository chargeRequestRepository;
 	@Autowired
@@ -41,8 +44,14 @@ public class ChargeService extends BaseService{
 		chargeRequest.setAmount(token.getAmount());
 		chargeRequest.setCurrency(token.getCurrency());
 		chargeRequest.setMerchantId(token.getMerchantId());
-		
-		chargeRequest = chargeRequestRepository.save(chargeRequest);
+		try
+		{
+			chargeRequest = chargeRequestRepository.save(chargeRequest);
+		}
+		catch(org.springframework.dao.DuplicateKeyException exception){
+			logger.warn("Failed to save charge Object", exception);
+			throw new InvalidTokenException("Token already used");
+		}
 		return newChargeProcessor.processRequest(chargeRequest);
 	}
 
