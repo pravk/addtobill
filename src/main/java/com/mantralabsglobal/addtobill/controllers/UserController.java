@@ -64,9 +64,12 @@ public class UserController extends BaseController {
 	}
 	
 	@RequestMapping(value="/user/merchant", method=RequestMethod.GET)
-	public UserMerchant getUserMerchantAssociation(@RequestParam(value="merchantId", required=false) String merchantId) throws UserExistsException, InvalidRequestException{
+	public UserMerchant getUserMerchantAssociation(@RequestParam(value="merchantId", required=false) String merchantId) throws  ResourceNotFoundException{
 		
-		return userService.fetchUserMerchantAssociation(merchantId);
+		UserMerchant userMerchant = userService.fetchUserMerchantAssociation(merchantId);
+		if(userMerchant == null)
+			throw new ResourceNotFoundException("User is not associated to merchant.");
+		return userMerchant;
 	}
 	
 	@RequestMapping(value="user/authToken", method=RequestMethod.POST)
