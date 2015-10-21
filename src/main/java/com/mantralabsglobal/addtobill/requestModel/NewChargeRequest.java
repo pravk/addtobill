@@ -3,12 +3,14 @@ package com.mantralabsglobal.addtobill.requestModel;
 import java.util.Date;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 public class NewChargeRequest extends ChargeRequest{
 
 	@Id
 	private String chargeRequestId;
 	private String userId;
+	@Indexed(unique=true)
 	private String token;
 	private String merchantId;
 	private double amount;
