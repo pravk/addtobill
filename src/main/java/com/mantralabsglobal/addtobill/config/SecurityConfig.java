@@ -1,6 +1,7 @@
 package com.mantralabsglobal.addtobill.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -11,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
 import com.mantralabsglobal.addtobill.auth.StatelessAuthenticationFilter;
 import com.mantralabsglobal.addtobill.model.Merchant;
@@ -56,6 +58,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			    	.passwordEncoder(passwordEncoder());
 			  }
 		};
+	}
+	
+	@Bean
+	public FilterRegistrationBean registerLoggingFilter() {
+		FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+		
+	    CommonsRequestLoggingFilter crlf = new CommonsRequestLoggingFilter();
+	    crlf.setIncludeClientInfo(true);
+	    crlf.setIncludeQueryString(true);
+	    crlf.setIncludePayload(true);
+	    crlf.setMaxPayloadLength(500);
+	    
+	    registrationBean.setFilter(crlf);
+	    registrationBean.setOrder(1);
+        return registrationBean;
 	}
 
 }   
