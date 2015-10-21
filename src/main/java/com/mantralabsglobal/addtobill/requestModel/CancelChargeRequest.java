@@ -1,7 +1,10 @@
 package com.mantralabsglobal.addtobill.requestModel;
 
+import org.springframework.data.annotation.Id;
+
 public class CancelChargeRequest extends ChargeRequest{
 
+	@Id
 	private String chargeId;
 	private String description;
 	private String statementDescription;
