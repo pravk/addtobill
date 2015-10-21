@@ -27,17 +27,6 @@ public class BaseController {
 		return new ResponseEntity<ErrorResponse>(response , HttpStatus.BAD_REQUEST);
 	}
 	
-	@ExceptionHandler(Exception.class)
-	public ResponseEntity<ErrorResponse> handleException(HttpServletRequest req, Exception exception) {
-		logger.warn("Request failed", exception);
-		ErrorResponse response = new ErrorResponse();
-		//response.setMessage(exception.getMessage());
-		response.setPath(req.getServletPath());
-		response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-		response.setError(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
-		response.setTimestamp(new Date().getTime());
-		return new ResponseEntity<ErrorResponse>(response , HttpStatus.INTERNAL_SERVER_ERROR);
-	}
 	
 	public static class ErrorResponse{
 		private long timestamp;

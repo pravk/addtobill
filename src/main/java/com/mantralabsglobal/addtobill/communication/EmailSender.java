@@ -53,7 +53,7 @@ public class EmailSender {
 	        mailMessage.setTo(user.getEmail());
 	        mailMessage.setFrom(from);
 	        mailMessage.setSubject("New Transaction");
-	        mailMessage.setText(String.format("Your account %s has been debited by %s %s", account.getAccountId(), account.getCurrency(), transaction.getAmount() ));
+	        mailMessage.setText(String.format("Your account %s has been %s by %s %s", account.getAccountId(), transaction.isCreditTransaction()?"credited":"debited" ,account.getCurrency(), transaction.getAmount() ));
 	        sender.send(mailMessage);
 	     
 		} 
