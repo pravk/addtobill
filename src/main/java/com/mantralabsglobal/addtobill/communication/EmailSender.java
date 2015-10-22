@@ -2,6 +2,8 @@ package com.mantralabsglobal.addtobill.communication;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -20,6 +22,10 @@ import com.mantralabsglobal.addtobill.repository.UserRepository;
 @Component
 public class EmailSender {
 
+	Logger logger = LoggerFactory.getLogger(EmailSender.class);
+	
+	private static int MAX_RETRY_COUNT=3;
+	
 	@Autowired
 	private JavaMailSender sender;
 	
@@ -54,7 +60,7 @@ public class EmailSender {
 	        mailMessage.setFrom(from);
 	        mailMessage.setSubject("New Transaction");
 	        mailMessage.setText(String.format("Your account %s has been %s by %s %s", account.getAccountId(), transaction.isCreditTransaction()?"credited":"debited" ,account.getCurrency(), transaction.getAmount() ));
-	        sender.send(mailMessage);
+	        sendMessage(mailMessage, 0);
 	     
 		} 
 	}
@@ -73,8 +79,20 @@ public class EmailSender {
 	        mailMessage.setFrom(from);
 	        mailMessage.setSubject("New bill generated!");
 	        mailMessage.setText(String.format("Total amount due is %s %s", account.getCurrency(), billingPeriod.getClosingBalance() ));
-	        sender.send(mailMessage);
+	        sendMessage(mailMessage, 0);
 		}
 		 
+	}
+	
+	protected void sendMessage(SimpleMailMessage message, int retryCounter){
+		try
+		{
+			sender.send(message);
+		}
+		catch(Exception exp){
+			logger.warn("Failed to send message ", exp);
+			if(retryCounter< MAX_RETRY_COUNT)
+				sendMessage(message, retryCounter++);
+		}
 	}
 }
