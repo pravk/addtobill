@@ -22,7 +22,7 @@ import com.mantralabsglobal.addtobill.repository.UserRepository;
 @Component
 public class EmailSender {
 
-	Logger logger = LoggerFactory.getLogger(EmailSender.class);
+	private static Logger logger = LoggerFactory.getLogger(EmailSender.class);
 	
 	private static int MAX_RETRY_COUNT=3;
 	
