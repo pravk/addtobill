@@ -66,7 +66,7 @@ public class BillingPeriod extends BaseEntity {
 	private double closingBalance;
 	
 	public boolean isOpen() {
-		return "O".equals(getStatus());
+		return getStatus() ==null ||  "O".equals(getStatus());
 	}
 
 	public String getStatus() {

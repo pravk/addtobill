@@ -205,5 +205,14 @@ public class UserService  extends BaseService implements org.springframework.sec
 		User user = getLoggedInUser();
 		return userMerchantRepository.findByMerchantIdAndUserId(merchantId, user.getUserId());
 	}
+
+	public User changePassword(UserAuthRequest request) {
+		Assert.notNull(request);
+		Assert.hasText(request.getPassword(), "Invalid password");
+		
+		User user = getLoggedInUser();
+		user.setPassword(passwordEncoder.encode(request.getPassword()));
+		return userRepository.save(user);
+	}
 		
 }

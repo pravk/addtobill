@@ -1,10 +1,10 @@
 package com.mantralabsglobal.addtobill.schedule;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 
-import org.apache.commons.lang3.time.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -16,24 +16,25 @@ import com.mantralabsglobal.addtobill.repository.BillingPeriodRepository;
 @Component
 public class BillingScheduler {
 
+	Logger logger =LoggerFactory.getLogger(BillingScheduler.class);
 	@Autowired
 	BillingPeriodRepository billingPeriodRepository;
 	
 	@Autowired
 	Application application;
 	
-	@Scheduled(fixedDelay=1000*60)
-	public void generateBills(){
+	@Scheduled(fixedDelay=1000*60*5)
+	public void lockBillingPeriods(){
 		
-		Date startOfDay = DateUtils.truncate(new Date(), Calendar.DATE);
-		Date endOfDay = DateUtils.addMilliseconds(DateUtils.ceiling(new Date(), Calendar.DATE),1);
+		logger.info("Start locking billing periods");
 		
-		Iterator<BillingPeriod> billingPeriodIterator = billingPeriodRepository.findAllByEndDateBetween(startOfDay, endOfDay).iterator() ;
+		Iterator<BillingPeriod> billingPeriodIterator = billingPeriodRepository.findAllByPeriodsToBeLocked(new Date()).iterator() ;
+		
 		while(billingPeriodIterator.hasNext()){
 			BillingPeriod bp = billingPeriodIterator.next();
 			if(bp.isOpen()){
 				bp.setStatus("L");
-				billingPeriodRepository.save(bp);
+				bp = billingPeriodRepository.save(bp);
 				application.postBillingPeriodStatusChange(bp);
 			}
 		}

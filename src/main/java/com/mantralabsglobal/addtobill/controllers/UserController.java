@@ -51,6 +51,11 @@ public class UserController extends BaseController {
 		return userService.loginUser(request);
 	}
 	
+	@RequestMapping(value="/user/password", method=RequestMethod.POST)
+	public User changePassword(@RequestBody UserAuthRequest request) throws ResourceNotFoundException, InvalidRequestException, UserExistsException, AuthenticationException{
+		return userService.changePassword(request);
+	}
+	
 	@RequestMapping(value="/user/account", method=RequestMethod.POST)
 	public Account createUser(@RequestBody UserAccountRequest user) throws UserExistsException, InvalidRequestException{
 		

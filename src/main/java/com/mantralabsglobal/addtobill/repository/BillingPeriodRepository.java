@@ -1,6 +1,7 @@
 package com.mantralabsglobal.addtobill.repository;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.Query;
@@ -19,5 +20,8 @@ public interface BillingPeriodRepository extends CrudRepository<BillingPeriod, S
 	
 	@Query("{'accountId': ?0 , 'status' : 'C' }")
 	BillingPeriod findOneClosedByAccountId(String accountId, Sort sort);
+
+	@Query("{ 'endDate': { $lt : ?0 }, '$or' : [{'status' : null}, {'status' : 'O'}]}")
+	List<BillingPeriod> findAllByPeriodsToBeLocked(Date date);
 
 }
