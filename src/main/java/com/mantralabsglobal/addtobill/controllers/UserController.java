@@ -6,6 +6,8 @@ import java.util.List;
 import javax.naming.AuthenticationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,6 +18,8 @@ import com.mantralabsglobal.addtobill.exception.InvalidRequestException;
 import com.mantralabsglobal.addtobill.exception.ResourceNotFoundException;
 import com.mantralabsglobal.addtobill.exception.UserExistsException;
 import com.mantralabsglobal.addtobill.model.Account;
+import com.mantralabsglobal.addtobill.model.Charge;
+import com.mantralabsglobal.addtobill.model.Transaction;
 import com.mantralabsglobal.addtobill.model.User;
 import com.mantralabsglobal.addtobill.model.UserMerchant;
 import com.mantralabsglobal.addtobill.requestModel.UserAccountRequest;
@@ -95,7 +99,23 @@ public class UserController extends BaseController {
 			return acct;
 		throw new ResourceNotFoundException(); 
 	}
+	
+	@RequestMapping(value="/user/charge", method=RequestMethod.GET)
+	public Charge getCharge(@RequestParam(value="id") String chargeId) throws ResourceNotFoundException{
+		return userService.getChargeById(chargeId);
+	}
 
+	@RequestMapping(value="/user/charges", method=RequestMethod.GET)
+	public Page<Charge> getCharges(Pageable pageable) throws ResourceNotFoundException{
+		return userService.getCharges(pageable);
+	}
+
+	@RequestMapping(value="/user/transactions", method=RequestMethod.GET)
+	public Page<Transaction> getTransactions(Pageable pageable) throws ResourceNotFoundException{
+		return userService.getTransactions(pageable);
+	}
+
+	
 	public UserService getUserService() {
 		return userService;
 	}

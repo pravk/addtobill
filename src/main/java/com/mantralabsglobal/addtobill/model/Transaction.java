@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 public class Transaction extends BaseEntity{
 
@@ -13,10 +14,13 @@ public class Transaction extends BaseEntity{
 	@Id
 	private String transactionId;
 
+	@Indexed
 	private String currency;
 	private double amount;
+	@Indexed
 	private String transactionAccountId;
 	private String debitCreditIndicator;
+	@Indexed
 	private String chargeId;
 	private String paymentId;
 	

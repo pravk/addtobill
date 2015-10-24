@@ -10,19 +10,26 @@ import javax.naming.AuthenticationException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import com.mantralabsglobal.addtobill.auth.TokenHandler;
 import com.mantralabsglobal.addtobill.exception.InsufficientBalanceException;
 import com.mantralabsglobal.addtobill.exception.InvalidRequestException;
 import com.mantralabsglobal.addtobill.exception.UserAccountNotSetup;
 import com.mantralabsglobal.addtobill.exception.UserExistsException;
 import com.mantralabsglobal.addtobill.model.Account;
+import com.mantralabsglobal.addtobill.model.Charge;
 import com.mantralabsglobal.addtobill.model.Merchant;
+import com.mantralabsglobal.addtobill.model.Transaction;
 import com.mantralabsglobal.addtobill.model.User;
 import com.mantralabsglobal.addtobill.model.UserMerchant;
 import com.mantralabsglobal.addtobill.requestModel.UserAuthRequest;
@@ -213,6 +220,31 @@ public class UserService  extends BaseService implements org.springframework.sec
 		User user = getLoggedInUser();
 		user.setPassword(passwordEncoder.encode(request.getPassword()));
 		return userRepository.save(user);
+	}
+
+	public Charge getChargeById(String chargeId) {
+		User user = getLoggedInUser();
+		if(user != null)
+			return chargeRepository.findOneByChargeIdAndUserId(chargeId, user.getUserId());
+		else
+			throw new AccessDeniedException("User Not authorized");
+	}
+
+	public Page<Charge> getCharges(Pageable pageable) {
+		User user = getLoggedInUser();
+		return chargeRepository.findByUserId(user.getUserId(), pageable);
+	}
+
+	public Page<Transaction> getTransactions(Pageable pageable) {
+		User user = getLoggedInUser();
+		List<Account> accountList = accountRepository.findAllByOwnerId(user.getUserId());
+		return transactionRepository.findByTransactionAccountIdIn( Lists.transform(accountList, new Function<Account, String>() {
+
+			@Override
+			public String apply(Account input) {
+				return input.getAccountId();
+			}
+		}), pageable );
 	}
 		
 }

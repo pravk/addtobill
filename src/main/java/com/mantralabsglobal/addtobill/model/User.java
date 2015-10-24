@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class User extends BaseEntity{
 
 	public static final String ROLE_USER = "ROLE_USER";
@@ -13,6 +15,7 @@ public class User extends BaseEntity{
 	
 	@Id
 	private String userId;
+	@JsonIgnore
 	private String password;
 	private List<String> roles;
 	private String billingAddressId;

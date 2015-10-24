@@ -1,5 +1,9 @@
 package com.mantralabsglobal.addtobill.repository;
 
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
@@ -16,5 +20,7 @@ public interface TransactionRepository extends CrudRepository<Transaction, Strin
 
 	@Query(value = "{ 'attributes.billingPeriod' : ?0 }")
 	Iterable<Transaction> findByBillingPeriod(String billingPeriodId);
+
+	Page<Transaction> findByTransactionAccountIdIn(List<String> transform, Pageable pageable);
 
 }

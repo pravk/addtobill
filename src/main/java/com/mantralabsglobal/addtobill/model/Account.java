@@ -3,6 +3,7 @@ package com.mantralabsglobal.addtobill.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mantralabsglobal.addtobill.exception.InsufficientBalanceException;
@@ -19,6 +20,7 @@ public abstract class Account extends BaseEntity {
 	@Id
 	private String accountId;
 	private String currency;
+	@Indexed
 	private String ownerId;	
 	private String accountType;
 	private double upperLimit;

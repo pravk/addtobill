@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Map;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 public class Charge extends BaseEntity {
 
@@ -20,8 +21,10 @@ public class Charge extends BaseEntity {
 	private double amount;
 	private double applicationFee;
 	private String currency;
+	@Indexed
 	private String userId;
 	private String description;
+	@Indexed
 	private String merchantId;
 	private String failureCode;
 	private String failureMessage;
@@ -34,6 +37,7 @@ public class Charge extends BaseEntity {
 	private String status;
 	private String chargeType;
 	private String linkedChargeId;
+	@Indexed
 	private String merchantReferenceId;
 	
 	
