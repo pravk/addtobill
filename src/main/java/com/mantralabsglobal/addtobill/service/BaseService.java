@@ -22,8 +22,6 @@ public abstract class BaseService {
 	@Autowired
 	protected AccountRepository accountRepository;
 	@Autowired
-	protected AccountRepository merchantAccountRepository;
-	@Autowired
 	protected UserRepository userRepository;
 	@Autowired
 	protected ChargeRepository chargeRepository;

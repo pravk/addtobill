@@ -20,9 +20,9 @@ jar {
     version =  '0.1.0'
 }
 
-springBoot {
-    executable = true
-}
+//springBoot {
+//    executable = true
+//}
 
 repositories {
     mavenCentral()

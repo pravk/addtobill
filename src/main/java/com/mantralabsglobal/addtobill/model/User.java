@@ -9,6 +9,7 @@ public class User extends BaseEntity{
 
 	public static final String ROLE_USER = "ROLE_USER";
 	public static final String ROLE_ADMIN = "ROLE_ADMIN";
+	public static final String ROLE_SERVICE = "ROLE_SERVICE_ACCOUNT";
 	
 	@Id
 	private String userId;

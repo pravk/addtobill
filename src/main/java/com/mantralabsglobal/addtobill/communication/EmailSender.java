@@ -92,7 +92,7 @@ public class EmailSender {
 		catch(Exception exp){
 			logger.warn("Failed to send message ", exp);
 			if(retryCounter< MAX_RETRY_COUNT)
-				sendMessage(message, retryCounter++);
+				sendMessage(message, ++retryCounter);
 		}
 	}
 }

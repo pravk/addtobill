@@ -24,7 +24,7 @@ public class DebitAccount extends Account{
 		{
 			newBalance -= transaction.getAmount();
 		}
-		if(newBalance > getUpperLimit()|| newBalance <getLowerLimit()){
+		if(newBalance > getUpperLimit()){
 			throw new InsufficientBalanceException();
 		}
 		else

@@ -3,23 +3,17 @@ package com.mantralabsglobal.addtobill.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mantralabsglobal.addtobill.exception.InvalidRequestException;
 import com.mantralabsglobal.addtobill.exception.ResourceNotFoundException;
 import com.mantralabsglobal.addtobill.exception.UserExistsException;
-import com.mantralabsglobal.addtobill.requestModel.CancelChargeRequest;
-import com.mantralabsglobal.addtobill.requestModel.NewChargeRequest;
 import com.mantralabsglobal.addtobill.model.Account;
-import com.mantralabsglobal.addtobill.model.Charge;
 import com.mantralabsglobal.addtobill.model.User;
 import com.mantralabsglobal.addtobill.service.AdminService;
-import com.mantralabsglobal.addtobill.service.ChargeService;
 
 @RestController
 public class AdminController {
@@ -27,30 +21,6 @@ public class AdminController {
 	@Autowired
 	private AdminService adminService;
 	
-	@Autowired
-	private ChargeService chargeService;
-	
-	@RequestMapping(value="admin/user", method=RequestMethod.GET)
-	public User getUser(@RequestParam(value="id", required=false) String userId, @RequestParam(value="email", required=false) String email) throws ResourceNotFoundException, InvalidRequestException{
-			
-		User user = null;
-		if(StringUtils.hasText(userId))
-		{
-			user = adminService.getUserById(userId);
-		}
-		else if(StringUtils.hasText(email) )
-		{
-			user = adminService.getUserByEmail(email);
-		}
-		else
-		{
-			throw new InvalidRequestException();
-		}
-		
-		if(user != null)
-			return user;
-		throw new ResourceNotFoundException(); 
-	}
 	
 	@RequestMapping(value="admin/user", method=RequestMethod.PUT)
 	public User updateUser(@RequestBody User user) throws UserExistsException{
@@ -68,16 +38,6 @@ public class AdminController {
 		if(acct != null)
 			return acct;
 		throw new ResourceNotFoundException(); 
-	}
-	
-	@RequestMapping(value="admin/charge", method=RequestMethod.POST)
-	public Charge createCharge(@RequestBody NewChargeRequest chargeAttributes) throws Exception{
-		return chargeService.newCharge(chargeAttributes);
-	}
-	
-	@RequestMapping(value="admin/refund", method=RequestMethod.POST)
-	public Charge cancelCharge(@RequestBody CancelChargeRequest chargeAttributes) throws Exception{
-		return chargeService.refundCharge(chargeAttributes);
 	}
 	
 	public AdminService getAdminService() {

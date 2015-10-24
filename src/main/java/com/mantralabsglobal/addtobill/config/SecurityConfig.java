@@ -36,6 +36,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		antMatchers("/user/register").permitAll().
 		antMatchers("/user/login").permitAll().
 		antMatchers("/merchant/register").permitAll().
+		antMatchers("/user/payment").access("hasRole('"+ User.ROLE_SERVICE +"')").
+		antMatchers("/merchant/payment").access("hasRole('"+ User.ROLE_SERVICE +"')").
 		antMatchers("/merchant/**").access("hasRole('" + Merchant.ROLE_MERCHANT + "')").
 		antMatchers("/user/**").access("hasRole('"+ User.ROLE_USER +"')").
 		//antMatchers("/admin/**").access("hasRole('"+ User.ROLE_ADMIN + "')").

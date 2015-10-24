@@ -18,6 +18,8 @@ public class Transaction extends BaseEntity{
 	private String transactionAccountId;
 	private String debitCreditIndicator;
 	private String chargeId;
+	private String paymentId;
+	
 	private Map<String,String> attributes;
 	
 	public String getTransactionId() {
@@ -91,6 +93,14 @@ public class Transaction extends BaseEntity{
 		if(getAttributes() == null)
 			attributes = new HashMap<>();
 		return attributes.put(key, value);
+	}
+
+	public String getPaymentId() {
+		return paymentId;
+	}
+
+	public void setPaymentId(String paymentId) {
+		this.paymentId = paymentId;
 	}
 
 }
