@@ -1,0 +1,51 @@
+How to Build and Run AddToBill application
+
+This is a Payment Gateway Application.
+(The Technologies/Tools used by this project: 
+STS or Eclipse IDE, Spring Boot, Spring MVC, MongoDB, MySQL Server, Google guava (this jar is included as part of the build). Postman)
+Building the application (Using STS)
+1.	Install latest Eclipse of SpringToolSuite
+a.	Refer https://eclipse.org/downloads/
+b.	Refer https://spring.io/tools/sts/all
+
+2.	Install Gradle Plugin for Eclipse or STS
+a.	https://github.com/spring-projects/eclipse-integration-gradle
+
+3.	Download Addtobill from Github
+a.	https://github.com/pravk/addtobill
+
+4.	Open STS, import AddtoBill project as a  Gradle project
+a.	The build takes care of adding all external jars
+b.	Build the project
+
+5.	Install MongoDB
+a.	Refer https://www.mongodb.org/downloads#production
+
+6.	Install MySQL Sever
+a.	Refer https://dev.mysql.com/downloads/windows/
+	
+7.	Install postman Plugin 
+a.	Refer https://www.getpostman.com/
+
+How to Run the application
+1.	Start MongoDB 
+a.	Open command prompt  c:\MongoDB\bin>mongod.exe
+2.	Start MySQL Server
+3.	Open STS, Run addtobill application as SpringBoot application.
+a.	This loads all beans and start Tomcat application required to run  this project
+
+8.	Open Google Chrome and Postman plugin to test the application.
+a.	We need to register user and merchant
+
+9.	Provide the following
+a.	URL: http://localhost:8080/addtobill/v1/user/register
+b.	Select “post”
+c.	Select raw (for the Message Body)
+d.	Provide the following json object to register  a sample user in the database
+{
+ "email":"ananya@gmail.com",
+ "password":"ananya#123",
+ "phoneNumber":"9900152066"
+}
+e.	You can verify creation of user  in the response window and also in your server console and  check MongoDB (atob database will be created)
+
